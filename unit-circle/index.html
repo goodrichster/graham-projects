@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Circle Explorer - Graham's Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .back-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #667eea;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .controls-panel {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .visualization-panel {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .angle-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .angle-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .slider-container {
+            margin-top: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .angle-value {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 0.85rem;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e1e8ed;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .preset-angles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #f8f9fa;
+            color: #333;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: monospace;
+        }
+
+        .preset-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .canvas-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        #unit-circle-canvas {
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            background: white;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .trig-values {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .trig-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .trig-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e1e8ed;
+            font-family: monospace;
+        }
+
+        .trig-item:last-child {
+            border-bottom: none;
+        }
+
+        .trig-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .trig-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .values-table-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .values-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: monospace;
+        }
+
+        .values-table th,
+        .values-table td {
+            padding: 12px 6px;
+            text-align: center;
+            border-bottom: 1px solid #e1e8ed;
+            font-size: 0.85rem;
+            min-width: 70px;
+        }
+        
+        .values-table th:first-child,
+        .values-table td:first-child {
+            min-width: 100px;
+        }
+
+        .values-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .values-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .values-table .current-row {
+            background: rgba(102, 126, 234, 0.1);
+            font-weight: 600;
+        }
+
+        .animation-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .control-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.stop {
+            background: #e74c3c;
+        }
+
+        .control-btn.stop:hover {
+            background: #c0392b;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header,
+            .controls-panel,
+            .visualization-panel,
+            .values-table-section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .preset-angles {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .animation-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Unit Circle Explorer</h1>
+            <a href="../index.html" class="back-link">← Back to Projects</a>
+        </div>
+        
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label for="angle-input">Angle (radians)</label>
+                    <input 
+                        type="number" 
+                        id="angle-input" 
+                        class="angle-input" 
+                        placeholder="Enter angle in radians"
+                        step="0.01"
+                        value="0"
+                        oninput="updateFromInput()"
+                    >
+                </div>
+                
+                <div class="control-group">
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Angle: θ =</span>
+                            <span class="angle-value" id="angle-display">0.00</span>
+                        </div>
+                        <input 
+                            type="range" 
+                            class="slider" 
+                            id="angle-slider" 
+                            min="0" 
+                            max="6.28318530718" 
+                            step="0.01" 
+                            value="0" 
+                            oninput="updateFromSlider()"
+                        >
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Common Angles</label>
+                    <div class="preset-angles">
+                        <button class="preset-btn" onclick="setAngle(0)">0</button>
+                        <button class="preset-btn" onclick="setAngle(Math.PI/6)">π/6</button>
+                        <button class="preset-btn" onclick="setAngle(Math.PI/4)">π/4</button>
+                        <button class="preset-btn" onclick="setAngle(Math.PI/3)">π/3</button>
+                        <button class="preset-btn" onclick="setAngle(Math.PI/2)">π/2</button>
+                        <button class="preset-btn" onclick="setAngle(2*Math.PI/3)">2π/3</button>
+                        <button class="preset-btn" onclick="setAngle(3*Math.PI/4)">3π/4</button>
+                        <button class="preset-btn" onclick="setAngle(5*Math.PI/6)">5π/6</button>
+                        <button class="preset-btn" onclick="setAngle(Math.PI)">π</button>
+                        <button class="preset-btn" onclick="setAngle(3*Math.PI/2)">3π/2</button>
+                        <button class="preset-btn" onclick="setAngle(2*Math.PI)">2π</button>
+                    </div>
+                </div>
+                
+                <div class="animation-controls">
+                    <button class="control-btn" onclick="startAnimation()">Animate</button>
+                    <button class="control-btn stop" onclick="stopAnimation()">Stop</button>
+                </div>
+                
+                <div class="trig-values">
+                    <div class="trig-title">Current Values</div>
+                    <div class="trig-item">
+                        <span class="trig-label">θ (radians):</span>
+                        <span class="trig-value" id="current-theta">0.00</span>
+                    </div>
+                    <div class="trig-item">
+                        <span class="trig-label">x = cos(θ):</span>
+                        <span class="trig-value" id="current-cos">1.00</span>
+                    </div>
+                    <div class="trig-item">
+                        <span class="trig-label">y = sin(θ):</span>
+                        <span class="trig-value" id="current-sin">0.00</span>
+                    </div>
+                    <div class="trig-item">
+                        <span class="trig-label">tan(θ):</span>
+                        <span class="trig-value" id="current-tan">0.00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="visualization-panel">
+                <div class="canvas-container">
+                    <canvas id="unit-circle-canvas" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="values-table-section">
+            <div class="table-title">Trigonometric Values Table</div>
+            <table class="values-table" id="values-table">
+                <thead>
+                    <tr>
+                        <th>θ (radians)</th>
+                        <th>θ (degrees)</th>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>sin(θ)</th>
+                        <th>cos(θ)</th>
+                        <th>tan(θ)</th>
+                    </tr>
+                </thead>
+                <tbody id="values-table-body">
+                    <!-- Values will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="./unit-circle.js"></script>
+</body>
+</html>

@@ -1,18 +1,244 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator - Graham's Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="./calc.js"></script>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-	<h1>Calculator</h1>
-	<input size="10" type="" id="x">
-	<br>
-	<input size="10" type="" id="y"> 
-	<br>
-	<button id="add" onclick="add()">+</button>
-	<button id="add" onclick="subtract()">-</button>
-	<button id="add" onclick="multiply()">x</button>
-	<button id="add" onclick="divide()">/</button>
-	= <span id="result">?</span>
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
 
+        .header {
+            margin-bottom: 30px;
+        }
 
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .back-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #4facfe;
+        }
+
+        .calculator {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .calculator-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .calculator-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .calculator-input.error {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .operations {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .operation-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .operation-btn.add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .operation-btn.subtract {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .operation-btn.multiply {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .operation-btn.divide {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .operation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .operation-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .result {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result.animated {
+            animation: resultPulse 0.5s ease;
+        }
+
+        @keyframes resultPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .operations {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Calculator</h1>
+            <a href="../index.html" class="back-link">← Back to Projects</a>
+        </div>
+        
+        <div class="calculator">
+            <div class="input-group">
+                <label for="first-number">First Number</label>
+                <input 
+                    type="number" 
+                    id="first-number" 
+                    class="calculator-input" 
+                    placeholder="Enter first number"
+                    step="any"
+                >
+            </div>
+            
+            <div class="input-group">
+                <label for="second-number">Second Number</label>
+                <input 
+                    type="number" 
+                    id="second-number" 
+                    class="calculator-input" 
+                    placeholder="Enter second number"
+                    step="any"
+                >
+            </div>
+            
+            <div class="operations">
+                <button class="operation-btn add" onclick="performOperation('add')">+</button>
+                <button class="operation-btn subtract" onclick="performOperation('subtract')">−</button>
+                <button class="operation-btn multiply" onclick="performOperation('multiply')">×</button>
+                <button class="operation-btn divide" onclick="performOperation('divide')">÷</button>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-label">Result</div>
+                <div class="result" id="result">Ready</div>
+                <div class="error-message" id="error-message"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./calc.js"></script>
+</body>
 </html>
