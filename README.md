@@ -1,5 +1,7 @@
 # Graham's Mathematical Applications Suite
 
+https://goodrichster.github.io/graham-projects/index.html
+
 A collection of interactive mathematical applications built with modern web technologies. This educational suite provides comprehensive tools for exploring arithmetic, geometry, trigonometry, and 3D mathematics.
 
 ## 🚀 Live Applications
