@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Simulations - Graham's Mathematical Applications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .simulation-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-button:hover {
+            background: #f0f0f0;
+        }
+
+        .tab-button.active:hover {
+            background: #5a6fd8;
+        }
+
+        .simulation-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .simulation-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .simulation-area {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .canvas-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-height: 500px;
+        }
+
+        .calculus-canvas {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            width: 100%;
+            height: 500px;
+            display: block;
+        }
+
+        .controls-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .control-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .control-button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .info-panel {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .formula-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .step-display {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+
+        .explanation-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .explanation-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .explanation-section p {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #6c757d;
+        }
+
+        .math-expression {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .simulation-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .simulation-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .tab-button {
+                min-width: 120px;
+                flex-shrink: 0;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Main Menu</a>
+            <h1>Calculus Simulations</h1>
+            <p class="subtitle">Interactive AP Calculus AB Concepts</p>
+        </div>
+        
+        <div class="simulation-tabs">
+            <button class="tab-button active" onclick="switchSimulation('limit-definition')">Limit Definition</button>
+            <button class="tab-button" onclick="switchSimulation('power-rule')">Power Rule</button>
+            <button class="tab-button" onclick="switchSimulation('product-rule')">Product Rule</button>
+            <button class="tab-button" onclick="switchSimulation('quotient-rule')">Quotient Rule</button>
+            <button class="tab-button" onclick="switchSimulation('chain-rule')">Chain Rule</button>
+            <button class="tab-button" onclick="switchSimulation('critical-points')">Critical Points</button>
+            <button class="tab-button" onclick="switchSimulation('function-analysis')">Function Analysis</button>
+        </div>
+
+        <!-- Limit Definition of Derivative -->
+        <div id="limit-definition" class="simulation-content active">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="limitCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Function f(x):</label>
+                        <select id="limitFunction" class="control-input" onchange="updateLimitVisualization()">
+                            <option value="x^2">x²</option>
+                            <option value="x^3">x³</option>
+                            <option value="sin(x)">sin(x)</option>
+                            <option value="cos(x)">cos(x)</option>
+                            <option value="e^x">eˣ</option>
+                            <option value="ln(x)">ln(x)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Point a:</label>
+                        <input type="number" id="limitPoint" class="control-input" value="1" step="0.1" onchange="updateLimitVisualization()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Δx (h):</label>
+                        <input type="range" id="deltaX" class="control-input" min="0.01" max="2" step="0.01" value="1" oninput="updateLimitVisualization()">
+                        <span id="deltaXValue">1.00</span>
+                    </div>
+                    <button class="control-button" onclick="animateLimit()">Animate Limit</button>
+                    
+                    <div class="info-panel">
+                        <h4>Derivative Definition:</h4>
+                        <div class="formula-display">
+                            f'(a) = lim[h→0] [f(a+h) - f(a)] / h
+                        </div>
+                        <div id="limitCalculation"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power Rule -->
+        <div id="power-rule" class="simulation-content">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="powerCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Power n:</label>
+                        <input type="number" id="powerValue" class="control-input" value="2" min="1" max="6" step="1" onchange="updatePowerRule()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient a:</label>
+                        <input type="number" id="coefficient" class="control-input" value="1" step="0.1" onchange="updatePowerRule()">
+                    </div>
+                    <button class="control-button" onclick="showPowerRuleSteps()">Show Derivation Steps</button>
+                    
+                    <div class="info-panel">
+                        <h4>Power Rule:</h4>
+                        <div class="formula-display">
+                            d/dx[axⁿ] = a·n·xⁿ⁻¹
+                        </div>
+                        <div id="powerSteps"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Rule -->
+        <div id="product-rule" class="simulation-content">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="productCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Function f(x):</label>
+                        <select id="productF" class="control-input" onchange="updateProductRule()">
+                            <option value="x">x</option>
+                            <option value="x^2">x²</option>
+                            <option value="sin(x)">sin(x)</option>
+                            <option value="e^x">eˣ</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Function g(x):</label>
+                        <select id="productG" class="control-input" onchange="updateProductRule()">
+                            <option value="x">x</option>
+                            <option value="x^2">x²</option>
+                            <option value="cos(x)">cos(x)</option>
+                            <option value="e^x">eˣ</option>
+                        </select>
+                    </div>
+                    <button class="control-button" onclick="animateProductRule()">Show Product Rule</button>
+                    
+                    <div class="info-panel">
+                        <h4>Product Rule:</h4>
+                        <div class="formula-display">
+                            d/dx[f(x)g(x)] = f'(x)g(x) + f(x)g'(x)
+                        </div>
+                        <div id="productCalculation"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quotient Rule -->
+        <div id="quotient-rule" class="simulation-content">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="quotientCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Numerator f(x):</label>
+                        <select id="quotientF" class="control-input" onchange="updateQuotientRule()">
+                            <option value="x^2">x²</option>
+                            <option value="sin(x)">sin(x)</option>
+                            <option value="e^x">eˣ</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Denominator g(x):</label>
+                        <select id="quotientG" class="control-input" onchange="updateQuotientRule()">
+                            <option value="x">x</option>
+                            <option value="x^2">x²</option>
+                            <option value="cos(x)">cos(x)</option>
+                            <option value="e^x">eˣ</option>
+                        </select>
+                    </div>
+                    <button class="control-button" onclick="animateQuotientRule()">Show Quotient Rule</button>
+                    
+                    <div class="info-panel">
+                        <h4>Quotient Rule:</h4>
+                        <div class="formula-display">
+                            d/dx[f(x)/g(x)] = [f'(x)g(x) - f(x)g'(x)] / [g(x)]²
+                        </div>
+                        <div id="quotientCalculation"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chain Rule -->
+        <div id="chain-rule" class="simulation-content">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="chainCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Outer Function f:</label>
+                        <select id="chainOuter" class="control-input" onchange="updateChainRule()">
+                            <option value="sin">sin</option>
+                            <option value="cos">cos</option>
+                            <option value="ln">ln</option>
+                            <option value="exp">e^</option>
+                            <option value="square">( )²</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Inner Function g(x):</label>
+                        <select id="chainInner" class="control-input" onchange="updateChainRule()">
+                            <option value="x^2">x²</option>
+                            <option value="2x">2x</option>
+                            <option value="x^3">x³</option>
+                            <option value="3x+1">3x+1</option>
+                        </select>
+                    </div>
+                    <button class="control-button" onclick="animateChainRule()">Show Chain Rule</button>
+                    
+                    <div class="info-panel">
+                        <h4>Chain Rule:</h4>
+                        <div class="formula-display">
+                            d/dx[f(g(x))] = f'(g(x)) · g'(x)
+                        </div>
+                        <div id="chainCalculation"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Points -->
+        <div id="critical-points" class="simulation-content">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="criticalCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Coefficient a (x³):</label>
+                        <input type="number" id="coeffA" class="control-input" value="1" step="0.1" onchange="updateCriticalPoints()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient b (x²):</label>
+                        <input type="number" id="coeffB" class="control-input" value="-3" step="0.1" onchange="updateCriticalPoints()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient c (x):</label>
+                        <input type="number" id="coeffC" class="control-input" value="0" step="0.1" onchange="updateCriticalPoints()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient d (constant):</label>
+                        <input type="number" id="coeffD" class="control-input" value="0" step="0.1" onchange="updateCriticalPoints()">
+                    </div>
+                    <button class="control-button" onclick="findCriticalPoints()">Find Critical Points</button>
+                    <button class="control-button" onclick="animateCriticalAnalysis()">Analyze Function</button>
+                    
+                    <div class="info-panel">
+                        <h4>Critical Points Analysis:</h4>
+                        <div class="formula-display" id="functionDisplay">
+                            f(x) = x³ - 3x²
+                        </div>
+                        <div class="formula-display" id="derivativeDisplay">
+                            f'(x) = 3x² - 6x
+                        </div>
+                        <div id="criticalPointsResults"></div>
+                        <div id="classificationResults"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Function Analysis -->
+        <div id="function-analysis" class="simulation-content">
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="analysisCanvas" class="calculus-canvas"></canvas>
+                </div>
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Coefficient a (x³):</label>
+                        <input type="number" id="analysisCoeffA" class="control-input" value="1" step="0.1" onchange="updateFunctionAnalysis()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient b (x²):</label>
+                        <input type="number" id="analysisCoeffB" class="control-input" value="-6" step="0.1" onchange="updateFunctionAnalysis()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient c (x):</label>
+                        <input type="number" id="analysisCoeffC" class="control-input" value="9" step="0.1" onchange="updateFunctionAnalysis()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Coefficient d (constant):</label>
+                        <input type="number" id="analysisCoeffD" class="control-input" value="-4" step="0.1" onchange="updateFunctionAnalysis()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Analysis Focus:</label>
+                        <select id="analysisFocus" class="control-input" onchange="updateFunctionAnalysis()">
+                            <option value="complete">Complete Analysis</option>
+                            <option value="derivatives">Derivatives Only</option>
+                            <option value="zeros">Zeros & Extrema</option>
+                            <option value="concavity">Concavity & Inflection</option>
+                            <option value="intervals">Increasing/Decreasing</option>
+                        </select>
+                    </div>
+                    <button class="control-button" onclick="performCompleteAnalysis()">Complete Analysis</button>
+                    <button class="control-button" onclick="animateAnalysisSteps()">Step-by-Step</button>
+                    
+                    <div class="info-panel" style="max-height: 400px; overflow-y: auto;">
+                        <h4>Comprehensive Function Analysis:</h4>
+                        <div id="analysisResults"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Content Section -->
+        <div class="explanation-section">
+            <h3>Understanding Derivatives in AP Calculus AB</h3>
+            <p><strong>Derivatives</strong> represent the instantaneous rate of change of a function at a specific point. This fundamental concept underlies much of calculus and has applications in physics, economics, engineering, and many other fields.</p>
+            
+            <p><strong>The Limit Definition</strong> provides the mathematical foundation for derivatives. By taking the limit as h approaches zero, we find the exact slope of the tangent line to a curve at any point.</p>
+            
+            <p><strong>Differentiation Rules</strong> allow us to find derivatives efficiently without always resorting to the limit definition:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><span class="math-expression">Power Rule</span>: Used for polynomial functions like x², x³, etc.</li>
+                <li><span class="math-expression">Product Rule</span>: Essential when differentiating products of functions</li>
+                <li><span class="math-expression">Quotient Rule</span>: Required for ratios of functions</li>
+                <li><span class="math-expression">Chain Rule</span>: Critical for composite functions like sin(x²) or e^(3x)</li>
+            </ul>
+            
+            <p><strong>Critical Points Analysis</strong> is fundamental for optimization problems in AP Calculus AB. Critical points occur where the derivative equals zero (f'(x) = 0) or is undefined. For cubic functions ax³ + bx² + cx + d, we find critical points by:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Taking the derivative: <span class="math-expression">f'(x) = 3ax² + 2bx + c</span></li>
+                <li>Setting f'(x) = 0 and solving the quadratic equation</li>
+                <li>Using the <span class="math-expression">Second Derivative Test</span> to classify each critical point as a local maximum, minimum, or point of inflection</li>
+                <li>Analyzing the behavior using f''(x) = 6ax + 2b</li>
+            </ul>
+            
+            <p><strong>Comprehensive Function Analysis</strong> addresses all the key questions in AP Calculus AB including:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><span class="math-expression">Rational Zeros</span>: Using the Rational Root Theorem to find exact zeros</li>
+                <li><span class="math-expression">Relative Extrema</span>: Identifying and classifying local maxima and minima</li>
+                <li><span class="math-expression">Inflection Points</span>: Finding where concavity changes using f''(x) = 0</li>
+                <li><span class="math-expression">Interval Analysis</span>: Determining where functions are increasing/decreasing and concave up/down</li>
+                <li><span class="math-expression">Complete Justification</span>: Providing mathematical reasoning for all conclusions</li>
+            </ul>
+            
+            <p><strong>Real-world Applications</strong>: Derivatives help us find maximum and minimum values (optimization), analyze motion (velocity and acceleration), and model rates of change in various phenomena. Critical point analysis is essential for business optimization, engineering design, and scientific modeling.</p>
+        </div>
+    </div>
+
+    <script src="calculus.js"></script>
+</body>
+</html>

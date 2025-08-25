@@ -8,6 +8,7 @@ A collection of interactive mathematical applications built with modern web tech
 - **Polygon Explorer** - Interactive 2D polygon visualization and analysis
 - **Unit Circle Explorer** - Comprehensive trigonometry with exact mathematical values
 - **Polyhedron Explorer** - 3D geometric solids with Euler's formula verification
+- **Physics Simulations** - Interactive AP Physics 1 concepts and visualizations
 
 ## 📱 Features
 
@@ -39,6 +40,22 @@ A collection of interactive mathematical applications built with modern web tech
 - **Multiple Polyhedra**: 9 different solids including Platonic solids
 - **Real-time Rotation**: X/Y axis controls with auto-rotation feature
 - **Educational Display**: Vertex, edge, and face counts with verification
+
+### ⚛️ Physics Simulations
+- **Projectile Motion**: Interactive trajectory visualization with customizable velocity, angle, and gravity
+- **Air Resistance Effects**: Compare trajectories with and without air drag
+- **Trajectory Comparison**: Overlay multiple projectile paths for analysis
+- **Real-time Calculations**: Displays theoretical values for range, max height, and flight time
+- **Vector Analysis**: Shows velocity components and magnitude during flight
+- **Forces & Motion**: Newton's laws with interactive force diagrams and net force visualization
+- **Energy Conservation**: KE/PE transformations in ramps, pendulums, and springs with energy bar charts
+- **Momentum & Collisions**: Elastic, inelastic, and perfectly inelastic collision analysis
+- **Simple Harmonic Motion**: Spring-mass systems and pendulums with exact period calculations
+- **Circular Motion**: Uniform circular motion with centripetal force and angular velocity analysis
+- **Educational Formulas**: Mathematical equations displayed alongside simulations
+- **Exact Mathematical Notation**: Uses π notation and exact radical representations
+- **AP Physics 1 Aligned**: Covers core concepts from kinematics to energy conservation
+- **Multiple Simulation Types**: Six different physics concepts with interactive controls
 
 ## 🛠 Technical Specifications
 
@@ -103,6 +120,7 @@ A collection of interactive mathematical applications built with modern web tech
 - **Plane Geometry**: Regular polygons and their properties
 - **Trigonometry**: Unit circle, exact values, and function relationships
 - **Solid Geometry**: 3D polyhedra and Euler's formula (V - E + F = 2)
+- **Physics**: Classical mechanics concepts from AP Physics 1 curriculum including circular motion
 
 ### Educational Value
 - **Exact Representations**: Teaches symbolic vs. decimal mathematics
@@ -136,6 +154,9 @@ graham-projects/
 ├── polyhedron/           # 3D geometry explorer
 │   ├── index.html
 │   └── polyhedron.js
+├── physics/              # Physics simulations
+│   ├── index.html
+│   └── physics.js
 └── README.md
 ```
 
@@ -166,6 +187,7 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 - Statistical analysis tools
 - Advanced trigonometric functions
 - Calculus visualization tools
+- Additional physics simulations (waves, electricity, magnetism)
 
 ## 📈 Version History
 

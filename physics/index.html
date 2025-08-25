@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Simulations - Graham's Mathematical Applications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .simulation-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-button:hover {
+            background: #f0f0f0;
+        }
+
+        .tab-button.active:hover {
+            background: #5a6fd8;
+        }
+
+        .simulation-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .simulation-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .simulation-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .canvas-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        #simulationCanvas {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            width: 100%;
+            height: 400px;
+            display: block;
+        }
+
+        .controls-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .control-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .control-button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .control-button.stop {
+            background: #dc3545;
+        }
+
+        .control-button.stop:hover {
+            background: #c82333;
+        }
+
+        .info-panel {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c5aa0;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .physics-description {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .physics-description h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .physics-description p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .formula {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .simulation-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .simulation-tabs {
+                justify-content: center;
+            }
+            
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Main Menu</a>
+            <h1>Physics Simulations</h1>
+            <p class="subtitle">Interactive AP Physics 1 Concepts</p>
+        </div>
+
+        <div class="simulation-tabs">
+            <button class="tab-button active" data-tab="projectile">Projectile Motion</button>
+            <button class="tab-button" data-tab="forces">Forces & Motion</button>
+            <button class="tab-button" data-tab="energy">Energy Conservation</button>
+            <button class="tab-button" data-tab="momentum">Momentum & Collisions</button>
+            <button class="tab-button" data-tab="oscillations">Simple Harmonic Motion</button>
+            <button class="tab-button" data-tab="circular">Circular Motion</button>
+        </div>
+
+        <!-- Projectile Motion Simulation -->
+        <div class="simulation-content active" id="projectile-content">
+            <div class="physics-description">
+                <h3>Projectile Motion</h3>
+                <p>Study the motion of objects launched into the air under the influence of gravity. This simulation demonstrates the independence of horizontal and vertical motion components - a fundamental principle in 2D kinematics.</p>
+                <p><strong>Key Concepts:</strong> When an object is launched at an angle, its motion can be analyzed as two independent components. The horizontal velocity remains constant (ignoring air resistance), while the vertical motion follows the same rules as free fall with constant downward acceleration due to gravity.</p>
+                <p><strong>Real-world Applications:</strong> Understanding projectile motion helps explain the flight paths of basketballs, cannonballs, water from fountains, and even planetary orbits. Engineers use these principles to design everything from sports equipment to spacecraft trajectories.</p>
+                <div class="formula">
+                    <strong>Kinematic Equations:</strong><br>
+                    x(t) = v₀ cos(θ) × t (horizontal position)<br>
+                    y(t) = v₀ sin(θ) × t - ½gt² (vertical position)<br>
+                    Range = v₀² sin(2θ) / g (maximum distance)<br>
+                    <em>Note: Maximum range occurs at 45° in a vacuum</em>
+                </div>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="projectileCanvas" width="600" height="400"></canvas>
+                </div>
+                
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Initial Velocity (m/s)</label>
+                        <input type="range" class="control-input" id="projectileVelocitySlider" min="10" max="100" value="50">
+                        <span id="projectileVelocityValue">50 m/s</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Launch Angle (degrees)</label>
+                        <input type="range" class="control-input" id="projectileAngleSlider" min="0" max="90" value="45">
+                        <span id="projectileAngleValue">45°</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Gravity (m/s²)</label>
+                        <input type="range" class="control-input" id="projectileGravitySlider" min="1" max="20" value="9.8" step="0.1">
+                        <span id="projectileGravityValue">9.8 m/s²</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Air Resistance</label>
+                        <input type="checkbox" class="control-input" id="projectileAirResistanceCheck">
+                        <span>Include air drag</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Comparison Mode</label>
+                        <input type="checkbox" class="control-input" id="projectileComparisonModeCheck">
+                        <span>Compare trajectories</span>
+                    </div>
+                    
+                    <button class="control-button" id="projectileLaunchBtn">Launch Projectile</button>
+                    <button class="control-button stop" id="projectileResetBtn">Reset Simulation</button>
+                    
+                    <div class="info-panel">
+                        <div class="info-title">Current Values</div>
+                        <div class="info-item"><span>Max Height:</span><span id="projectileMaxHeight">-</span></div>
+                        <div class="info-item"><span>Range:</span><span id="projectileRange">-</span></div>
+                        <div class="info-item"><span>Flight Time:</span><span id="projectileFlightTime">-</span></div>
+                        <div class="info-item"><span>Current Speed:</span><span id="projectileCurrentSpeed">-</span></div>
+                        <div class="info-item"><span>Launch Angle (rad):</span><span id="projectileAngleRadians">-</span></div>
+                        <div class="info-item"><span>Optimal Angle:</span><span id="projectileOptimalAngle">45° (π/4 rad)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forces & Motion Simulation -->
+        <div class="simulation-content" id="forces-content">
+            <div class="physics-description">
+                <h3>Forces and Newton's Laws</h3>
+                <p>Explore how forces affect motion according to Newton's three fundamental laws. Visualize force vectors, acceleration, and the relationship between mass and motion in real-time.</p>
+                <p><strong>Newton's Laws Explained:</strong></p>
+                <p><strong>1st Law (Inertia):</strong> An object at rest stays at rest, and an object in motion stays in motion, unless acted upon by an unbalanced force.</p>
+                <p><strong>2nd Law (F=ma):</strong> The acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass.</p>
+                <p><strong>3rd Law (Action-Reaction):</strong> For every action, there is an equal and opposite reaction.</p>
+                <p><strong>Understanding Forces:</strong> This simulation shows how applied force, friction, weight, and normal force interact. Notice how the net force determines acceleration, and how friction opposes motion.</p>
+                <div class="formula">
+                    <strong>Force Equations:</strong><br>
+                    F = ma (Newton's Second Law)<br>
+                    a = ΣF / m (acceleration from net force)<br>
+                    f = μN (friction force)<br>
+                    <em>Net force determines motion, not individual forces</em>
+                </div>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="forcesCanvas" width="600" height="400"></canvas>
+                </div>
+                
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Object Mass (kg)</label>
+                        <input type="range" class="control-input" id="forcesMassSlider" min="1" max="20" value="5" step="0.5">
+                        <span id="forcesMassValue">5.0 kg</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Applied Force (N)</label>
+                        <input type="range" class="control-input" id="forcesAppliedForceSlider" min="-50" max="50" value="20" step="1">
+                        <span id="forcesAppliedForceValue">20 N</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Friction Coefficient</label>
+                        <input type="range" class="control-input" id="forcesFrictionSlider" min="0" max="0.5" value="0.1" step="0.01">
+                        <span id="forcesFrictionValue">0.10</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Surface Angle (°)</label>
+                        <input type="range" class="control-input" id="forcesAngleSlider" min="0" max="30" value="0" step="1">
+                        <span id="forcesAngleValue">0°</span>
+                    </div>
+                    
+                    <button class="control-button" id="forcesStartBtn">Start Motion</button>
+                    <button class="control-button stop" id="forcesStopBtn">Stop</button>
+                    <button class="control-button" id="forcesResetBtn">Reset</button>
+                    
+                    <div class="info-panel">
+                        <div class="info-title">Force Analysis</div>
+                        <div class="info-item"><span>Net Force:</span><span id="forcesNetForce">0 N</span></div>
+                        <div class="info-item"><span>Acceleration:</span><span id="forcesAcceleration">0 m/s²</span></div>
+                        <div class="info-item"><span>Velocity:</span><span id="forcesVelocity">0 m/s</span></div>
+                        <div class="info-item"><span>Friction Force:</span><span id="forcesFrictionForce">0 N</span></div>
+                        <div class="info-item"><span>Normal Force:</span><span id="forcesNormalForce">0 N</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Energy Conservation Simulation -->
+        <div class="simulation-content" id="energy-content">
+            <div class="physics-description">
+                <h3>Energy Conservation</h3>
+                <p>Observe how kinetic and potential energy transform in various scenarios while total mechanical energy remains constant (in the absence of friction). This fundamental principle governs everything from roller coasters to planetary motion.</p>
+                <p><strong>Energy Types:</strong></p>
+                <p><strong>Kinetic Energy (KE):</strong> Energy of motion. Faster objects and heavier objects have more kinetic energy.</p>
+                <p><strong>Potential Energy (PE):</strong> Stored energy due to position. Gravitational PE increases with height; elastic PE increases with compression or extension.</p>
+                <p><strong>Conservation Principle:</strong> In the absence of friction and air resistance, mechanical energy (KE + PE) remains constant. Energy transforms between types but is never created or destroyed.</p>
+                <p><strong>Real-world Examples:</strong> A pendulum converts between KE and PE, a rolling ball trades height for speed, and springs store and release elastic energy.</p>
+                <div class="formula">
+                    <strong>Energy Equations:</strong><br>
+                    KE = ½mv² (kinetic energy)<br>
+                    PE = mgh (gravitational potential energy)<br>
+                    Total Energy = KE + PE = constant<br>
+                    <em>Energy is conserved but can change forms</em>
+                </div>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="energyCanvas" width="600" height="400"></canvas>
+                </div>
+                
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Scenario</label>
+                        <select class="control-input" id="energyScenario">
+                            <option value="ramp">Rolling Ball on Ramp</option>
+                            <option value="pendulum">Swinging Pendulum</option>
+                            <option value="spring">Spring-Mass System</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Mass (kg)</label>
+                        <input type="range" class="control-input" id="energyMassSlider" min="0.5" max="5" value="1" step="0.1">
+                        <span id="energyMassValue">1.0 kg</span>
+                    </div>
+                    
+                    <div class="control-group" id="energyHeightControls">
+                        <label class="control-label">Initial Height (m)</label>
+                        <input type="range" class="control-input" id="energyHeightSlider" min="1" max="8" value="5" step="0.1">
+                        <span id="energyHeightValue">5.0 m</span>
+                    </div>
+                    
+                    <div class="control-group" id="energyVelocityControls">
+                        <label class="control-label">Initial Velocity (m/s)</label>
+                        <input type="range" class="control-input" id="energyVelocitySlider" min="0" max="20" value="0" step="0.1">
+                        <span id="energyVelocityValue">0.0 m/s</span>
+                    </div>
+                    
+                    <button class="control-button" id="energyStartBtn">Start Simulation</button>
+                    <button class="control-button stop" id="energyStopBtn">Stop</button>
+                    <button class="control-button" id="energyResetBtn">Reset</button>
+                    
+                    <div class="info-panel">
+                        <div class="info-title">Energy Values</div>
+                        <div class="info-item"><span>Kinetic Energy:</span><span id="energyKineticEnergy">0 J</span></div>
+                        <div class="info-item"><span>Potential Energy:</span><span id="energyPotentialEnergy">0 J</span></div>
+                        <div class="info-item"><span>Total Energy:</span><span id="energyTotalEnergy">0 J</span></div>
+                        <div class="info-item"><span>Current Speed:</span><span id="energyCurrentSpeed">0 m/s</span></div>
+                        <div class="info-item"><span>Current Height:</span><span id="energyCurrentHeight">0 m</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Momentum & Collisions Simulation -->
+        <div class="simulation-content" id="momentum-content">
+            <div class="physics-description">
+                <h3>Momentum and Collisions</h3>
+                <p>Investigate conservation of momentum in elastic and inelastic collisions. See how momentum and kinetic energy behave in different collision scenarios, from billiard balls to car crashes.</p>
+                <p><strong>Momentum Basics:</strong> Momentum (p = mv) measures the "quantity of motion" - how hard it is to stop a moving object. Heavy objects and fast objects have high momentum.</p>
+                <p><strong>Collision Types:</strong></p>
+                <p><strong>Elastic:</strong> Both momentum and kinetic energy are conserved. Objects bounce off each other (like billiard balls).</p>
+                <p><strong>Inelastic:</strong> Momentum is conserved, but some kinetic energy is lost to heat, sound, or deformation.</p>
+                <p><strong>Perfectly Inelastic:</strong> Objects stick together after collision. Momentum is conserved, but maximum kinetic energy is lost.</p>
+                <p><strong>Real Applications:</strong> Understanding collisions helps design safer cars, explains why freight trains are hard to stop, and describes particle interactions in physics experiments.</p>
+                <div class="formula">
+                    <strong>Conservation Laws:</strong><br>
+                    p = mv (momentum)<br>
+                    Σp_initial = Σp_final (momentum conservation)<br>
+                    e = (v₂ - v₁) / (u₁ - u₂) (coefficient of restitution)<br>
+                    <em>Momentum is always conserved in collisions</em>
+                </div>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="momentumCanvas" width="600" height="400"></canvas>
+                </div>
+                
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Collision Type</label>
+                        <select class="control-input" id="momentumCollisionType">
+                            <option value="elastic">Elastic Collision</option>
+                            <option value="inelastic">Inelastic Collision</option>
+                            <option value="perfectly-inelastic">Perfectly Inelastic</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Object 1 Mass (kg)</label>
+                        <input type="range" class="control-input" id="momentumMass1Slider" min="0.5" max="10" value="2" step="0.1">
+                        <span id="momentumMass1Value">2.0 kg</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Object 1 Velocity (m/s)</label>
+                        <input type="range" class="control-input" id="momentumVelocity1Slider" min="-10" max="10" value="5" step="0.1">
+                        <span id="momentumVelocity1Value">5.0 m/s</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Object 2 Mass (kg)</label>
+                        <input type="range" class="control-input" id="momentumMass2Slider" min="0.5" max="10" value="3" step="0.1">
+                        <span id="momentumMass2Value">3.0 kg</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Object 2 Velocity (m/s)</label>
+                        <input type="range" class="control-input" id="momentumVelocity2Slider" min="-10" max="10" value="-2" step="0.1">
+                        <span id="momentumVelocity2Value">-2.0 m/s</span>
+                    </div>
+                    
+                    <button class="control-button" id="momentumStartBtn">Start Collision</button>
+                    <button class="control-button stop" id="momentumStopBtn">Stop</button>
+                    <button class="control-button" id="momentumResetBtn">Reset</button>
+                    
+                    <div class="info-panel">
+                        <div class="info-title">Conservation Analysis</div>
+                        <div class="info-item"><span>Initial Momentum:</span><span id="momentumInitialMomentum">0 kg⋅m/s</span></div>
+                        <div class="info-item"><span>Final Momentum:</span><span id="momentumFinalMomentum">0 kg⋅m/s</span></div>
+                        <div class="info-item"><span>Initial KE:</span><span id="momentumInitialKE">0 J</span></div>
+                        <div class="info-item"><span>Final KE:</span><span id="momentumFinalKE">0 J</span></div>
+                        <div class="info-item"><span>KE Lost:</span><span id="momentumKeLost">0 J</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simple Harmonic Motion Simulation -->
+        <div class="simulation-content" id="oscillations-content">
+            <div class="physics-description">
+                <h3>Simple Harmonic Motion</h3>
+                <p>Study oscillatory motion in springs and pendulums. Understand the relationship between displacement, velocity, acceleration, and the restoring force that drives periodic motion.</p>
+                <p><strong>What is SHM?</strong> Simple Harmonic Motion occurs when an object experiences a restoring force proportional to its displacement from equilibrium. This creates smooth, predictable oscillations.</p>
+                <p><strong>Key Characteristics:</strong></p>
+                <p><strong>Restoring Force:</strong> Always points toward equilibrium and increases with displacement (F = -kx for springs).</p>
+                <p><strong>Energy Exchange:</strong> Kinetic and potential energy continuously transform as the object oscillates.</p>
+                <p><strong>Periodic Motion:</strong> The motion repeats with a constant period that depends only on the system properties, not the amplitude.</p>
+                <p><strong>Real Examples:</strong> Grandfather clock pendulums, car suspension systems, guitar strings, earthquake building sway, and even atomic vibrations all exhibit simple harmonic motion.</p>
+                <div class="formula">
+                    <strong>SHM Equations:</strong><br>
+                    F = -kx (Hooke's Law - spring restoring force)<br>
+                    T = 2π√(m/k) (Spring period)<br>
+                    T = 2π√(L/g) (Pendulum period)<br>
+                    <em>Period is independent of amplitude for small oscillations</em>
+                </div>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="oscillationsCanvas" width="600" height="400"></canvas>
+                </div>
+                
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Simulation Type</label>
+                        <select class="control-input" id="oscillationsType">
+                            <option value="spring">Spring-Mass System</option>
+                            <option value="pendulum">Simple Pendulum</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group" id="oscillationsSpringControls">
+                        <label class="control-label">Spring Constant (N/m)</label>
+                        <input type="range" class="control-input" id="oscillationsSpringConstantSlider" min="10" max="200" value="50">
+                        <span id="oscillationsSpringConstantValue">50 N/m</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Mass (kg)</label>
+                        <input type="range" class="control-input" id="oscillationsMassSlider" min="0.5" max="5" value="1" step="0.1">
+                        <span id="oscillationsMassValue">1.0 kg</span>
+                    </div>
+                    
+                    <div class="control-group" id="oscillationsPendulumControls" style="display: none;">
+                        <label class="control-label">Length (m)</label>
+                        <input type="range" class="control-input" id="oscillationsLengthSlider" min="0.5" max="3" value="1" step="0.1">
+                        <span id="oscillationsLengthValue">1.0 m</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Initial Displacement</label>
+                        <input type="range" class="control-input" id="oscillationsAmplitudeSlider" min="20" max="150" value="100">
+                        <span id="oscillationsAmplitudeValue">100 px</span>
+                    </div>
+                    
+                    <button class="control-button" id="oscillationsStartBtn">Start Oscillation</button>
+                    <button class="control-button stop" id="oscillationsStopBtn">Stop</button>
+                    <button class="control-button" id="oscillationsResetBtn">Reset</button>
+                    
+                    <div class="info-panel">
+                        <div class="info-title">Current Values</div>
+                        <div class="info-item"><span>Period:</span><span id="oscillationsPeriod">-</span></div>
+                        <div class="info-item"><span>Frequency:</span><span id="oscillationsFrequency">-</span></div>
+                        <div class="info-item"><span>Position:</span><span id="oscillationsPosition">-</span></div>
+                        <div class="info-item"><span>Velocity:</span><span id="oscillationsVelocity">-</span></div>
+                        <div class="info-item"><span>Acceleration:</span><span id="oscillationsAcceleration">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Circular Motion Simulation -->
+        <div class="simulation-content" id="circular-content">
+            <div class="physics-description">
+                <h3>Circular Motion</h3>
+                <p>Study uniform circular motion and centripetal force. Understand the relationship between angular velocity, centripetal acceleration, and the forces needed for circular motion.</p>
+                <p><strong>Understanding Circular Motion:</strong> Even at constant speed, circular motion involves acceleration because the velocity direction constantly changes. This centripetal ("center-seeking") acceleration requires a net inward force.</p>
+                <p><strong>Key Concepts:</strong></p>
+                <p><strong>Centripetal Force:</strong> Not a new type of force, but the net inward force (tension, gravity, friction, etc.) that keeps objects moving in circles.</p>
+                <p><strong>Angular vs. Linear:</strong> While linear speed may be constant, angular velocity describes how quickly the object rotates around the center.</p>
+                <p><strong>Acceleration Paradox:</strong> The object accelerates toward the center but never gets closer - the sideways motion exactly balances the inward acceleration.</p>
+                <p><strong>Real Applications:</strong> Cars rounding curves, satellites orbiting Earth, washing machines, amusement park rides, and electrons orbiting atoms all demonstrate circular motion principles.</p>
+                <div class="formula">
+                    <strong>Circular Motion Equations:</strong><br>
+                    a_c = v²/r = ω²r (centripetal acceleration)<br>
+                    F_c = ma_c = mv²/r (centripetal force)<br>
+                    ω = 2πf = 2π/T (angular frequency)<br>
+                    <em>Centripetal force is always directed toward the center</em>
+                </div>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="circularCanvas" width="600" height="400"></canvas>
+                </div>
+                
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label class="control-label">Object Mass (kg)</label>
+                        <input type="range" class="control-input" id="circularMassSlider" min="0.5" max="10" value="2" step="0.1">
+                        <span id="circularMassValue">2.0 kg</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Radius (m)</label>
+                        <input type="range" class="control-input" id="circularRadiusSlider" min="0.5" max="5" value="2" step="0.1">
+                        <span id="circularRadiusValue">2.0 m</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Angular Velocity (rad/s)</label>
+                        <input type="range" class="control-input" id="circularAngularVelocitySlider" min="0.1" max="10" value="2" step="0.1">
+                        <span id="circularAngularVelocityValue">2.0 rad/s</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Show Vectors</label>
+                        <input type="checkbox" class="control-input" id="circularShowVectorsCheck" checked>
+                        <span>Display force vectors</span>
+                    </div>
+                    
+                    <button class="control-button" id="circularStartBtn">Start Motion</button>
+                    <button class="control-button stop" id="circularStopBtn">Stop</button>
+                    <button class="control-button" id="circularResetBtn">Reset</button>
+                    
+                    <div class="info-panel">
+                        <div class="info-title">Circular Motion Values</div>
+                        <div class="info-item"><span>Centripetal Force:</span><span id="circularCentripetalForce">0 N</span></div>
+                        <div class="info-item"><span>Centripetal Acceleration:</span><span id="circularCentripetalAccel">0 m/s²</span></div>
+                        <div class="info-item"><span>Tangential Speed:</span><span id="circularTangentialSpeed">0 m/s</span></div>
+                        <div class="info-item"><span>Period:</span><span id="circularPeriod">0 s</span></div>
+                        <div class="info-item"><span>Frequency:</span><span id="circularFrequency">0 Hz</span></div>
+                        <div class="info-item"><span>Angular Velocity (π notation):</span><span id="circularAngularExact">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="physics.js"></script>
+</body>
+</html>
