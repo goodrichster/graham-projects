@@ -17,7 +17,7 @@ class CalculusSimulations {
     }
 
     initializeCanvases() {
-        const canvasIds = ['limitCanvas', 'powerCanvas', 'productCanvas', 'quotientCanvas', 'chainCanvas', 'criticalCanvas', 'analysisCanvas'];
+        const canvasIds = ['limitCanvas', 'powerCanvas', 'productCanvas', 'quotientCanvas', 'chainCanvas', 'criticalCanvas', 'analysisCanvas', 'integrationCanvas', 'rationalCanvas'];
         
         canvasIds.forEach(id => {
             const canvas = document.getElementById(id);
@@ -133,6 +133,12 @@ class CalculusSimulations {
             case 'function-analysis':
                 this.updateFunctionAnalysis();
                 break;
+            case 'numerical-integration':
+                this.updateNumericalIntegration();
+                break;
+            case 'rational-functions':
+                this.updateRationalFunction();
+                break;
         }
     }
 
@@ -185,6 +191,21 @@ class CalculusSimulations {
                 document.getElementById('analysisFocus').value = 'complete';
                 this.switchCanvas('analysisCanvas');
                 this.updateFunctionAnalysis();
+                break;
+            case 'numerical-integration':
+                document.getElementById('integrationMethod').value = 'midpoint';
+                document.getElementById('dataInputMethod').value = 'table';
+                document.getElementById('numSubintervals').value = '5';
+                this.switchCanvas('integrationCanvas');
+                this.updateNumericalIntegration();
+                break;
+            case 'rational-functions':
+                document.getElementById('numerator').value = 'x^3-3*x^2+6*x-4';
+                document.getElementById('denominator').value = 'x^2-3*x+2';
+                document.getElementById('rationalAnalysisType').value = 'complete';
+                document.getElementById('xRange').value = '10';
+                this.switchCanvas('rationalCanvas');
+                this.updateRationalFunction();
                 break;
         }
     }
@@ -1374,6 +1395,506 @@ class CalculusSimulations {
         animate();
     }
 
+    // Numerical Integration Section
+    updateNumericalIntegration() {
+        const canvas = this.canvases.integrationCanvas;
+        const ctx = this.contexts.integrationCanvas;
+        if (!ctx) return;
+
+        ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+        this.drawAxes(ctx, canvas);
+        
+        const method = document.getElementById('integrationMethod').value;
+        const dataInputMethod = document.getElementById('dataInputMethod').value;
+        
+        if (dataInputMethod === 'table') {
+            this.drawDataPoints(ctx, canvas);
+            this.visualizeNumericalIntegration(ctx, canvas, method);
+        } else {
+            const func = document.getElementById('integrationFunction').value;
+            this.drawFunction(ctx, canvas, func, '#2196F3', 2);
+            this.visualizeFunctionIntegration(ctx, canvas, func, method);
+        }
+        
+        this.calculateIntegration();
+    }
+    
+    drawDataPoints(ctx, canvas) {
+        const dataText = document.getElementById('dataTable').value;
+        const points = this.parseDataTable(dataText);
+        
+        if (points.length === 0) return;
+        
+        // Find scale based on data range
+        const xRange = Math.max(...points.map(p => p.x)) - Math.min(...points.map(p => p.x));
+        const yRange = Math.max(...points.map(p => p.y)) - Math.min(...points.map(p => p.y));
+        
+        const xScale = (canvas.width * 0.8) / xRange;
+        const yScale = (canvas.height * 0.6) / yRange;
+        const scale = Math.min(xScale, yScale, 50);
+        
+        // Draw the curve connecting points
+        ctx.strokeStyle = '#2196F3';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        for (let i = 0; i < points.length; i++) {
+            const x = (points[i].x - points[0].x) * scale / 10 - canvas.width/4;
+            const y = points[i].y * scale / 100;
+            
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.stroke();
+        
+        // Draw data points
+        ctx.fillStyle = '#F44336';
+        points.forEach(point => {
+            const x = (point.x - points[0].x) * scale / 10 - canvas.width/4;
+            const y = point.y * scale / 100;
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+        });
+    }
+    
+    parseDataTable(dataText) {
+        const lines = dataText.trim().split('\n');
+        const points = [];
+        
+        lines.forEach(line => {
+            const parts = line.trim().split(/\s+/);
+            if (parts.length >= 2) {
+                const x = parseFloat(parts[0]);
+                const y = parseFloat(parts[1]);
+                if (!isNaN(x) && !isNaN(y)) {
+                    points.push({x, y});
+                }
+            }
+        });
+        
+        return points.sort((a, b) => a.x - b.x);
+    }
+    
+    visualizeNumericalIntegration(ctx, canvas, method) {
+        const points = this.parseDataTable(document.getElementById('dataTable').value);
+        const n = parseInt(document.getElementById('numSubintervals').value);
+        
+        if (points.length < 2 || n < 1) return;
+        
+        const xRange = points[points.length - 1].x - points[0].x;
+        const deltaX = xRange / n;
+        
+        const scale = Math.min(50, (canvas.width * 0.8) / xRange);
+        
+        // Draw rectangles or trapezoids
+        ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+        ctx.strokeStyle = '#4CAF50';
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < n; i++) {
+            const x1 = points[0].x + i * deltaX;
+            const x2 = points[0].x + (i + 1) * deltaX;
+            
+            const y1 = this.interpolateValue(points, x1);
+            const y2 = this.interpolateValue(points, x2);
+            
+            const canvasX1 = (x1 - points[0].x) * scale / 10 - canvas.width/4;
+            const canvasX2 = (x2 - points[0].x) * scale / 10 - canvas.width/4;
+            const canvasY1 = y1 * scale / 100;
+            const canvasY2 = y2 * scale / 100;
+            
+            if (method === 'midpoint' || method === 'both') {
+                const midX = (x1 + x2) / 2;
+                const midY = this.interpolateValue(points, midX);
+                const canvasMidX = (midX - points[0].x) * scale / 10 - canvas.width/4;
+                const canvasMidY = midY * scale / 100;
+                
+                // Draw rectangle
+                ctx.fillStyle = method === 'both' ? 'rgba(76, 175, 80, 0.2)' : 'rgba(76, 175, 80, 0.3)';
+                ctx.fillRect(canvasX1, 0, canvasX2 - canvasX1, canvasMidY);
+                ctx.strokeRect(canvasX1, 0, canvasX2 - canvasX1, canvasMidY);
+            }
+            
+            if (method === 'trapezoidal' || method === 'both') {
+                // Draw trapezoid
+                ctx.fillStyle = method === 'both' ? 'rgba(244, 67, 54, 0.2)' : 'rgba(76, 175, 80, 0.3)';
+                ctx.strokeStyle = method === 'both' ? '#F44336' : '#4CAF50';
+                
+                ctx.beginPath();
+                ctx.moveTo(canvasX1, 0);
+                ctx.lineTo(canvasX1, canvasY1);
+                ctx.lineTo(canvasX2, canvasY2);
+                ctx.lineTo(canvasX2, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+    }
+    
+    interpolateValue(points, x) {
+        if (points.length < 2) return 0;
+        
+        // Find the two points to interpolate between
+        for (let i = 0; i < points.length - 1; i++) {
+            if (x >= points[i].x && x <= points[i + 1].x) {
+                const t = (x - points[i].x) / (points[i + 1].x - points[i].x);
+                return points[i].y + t * (points[i + 1].y - points[i].y);
+            }
+        }
+        
+        // Extrapolate if outside range
+        if (x < points[0].x) return points[0].y;
+        if (x > points[points.length - 1].x) return points[points.length - 1].y;
+        
+        return 0;
+    }
+    
+    calculateIntegration() {
+        const points = this.parseDataTable(document.getElementById('dataTable').value);
+        const n = parseInt(document.getElementById('numSubintervals').value);
+        const method = document.getElementById('integrationMethod').value;
+        
+        if (points.length < 2 || n < 1) {
+            document.getElementById('integrationResults').innerHTML = '<div class="step-display">Please provide valid data points.</div>';
+            return;
+        }
+        
+        const xRange = points[points.length - 1].x - points[0].x;
+        const deltaX = xRange / n;
+        
+        let midpointSum = 0;
+        let trapezoidalSum = 0;
+        
+        // Calculate both methods
+        for (let i = 0; i < n; i++) {
+            const x1 = points[0].x + i * deltaX;
+            const x2 = points[0].x + (i + 1) * deltaX;
+            
+            // Midpoint rule
+            const midX = (x1 + x2) / 2;
+            const midY = this.interpolateValue(points, midX);
+            midpointSum += midY * deltaX;
+            
+            // Trapezoidal rule
+            const y1 = this.interpolateValue(points, x1);
+            const y2 = this.interpolateValue(points, x2);
+            trapezoidalSum += 0.5 * (y1 + y2) * deltaX;
+        }
+        
+        let results = '';
+        
+        if (method === 'midpoint' || method === 'both') {
+            results += `
+                <div class="step-display">
+                    <strong>Midpoint Rule (n = ${n}):</strong><br>
+                    Δx = (${points[points.length-1].x} - ${points[0].x})/${n} = ${deltaX.toFixed(1)}<br>
+                    Area ≈ Σ f(m₍ᵢ₎)Δx = ${midpointSum.toFixed(2)}
+                </div>
+            `;
+        }
+        
+        if (method === 'trapezoidal' || method === 'both') {
+            results += `
+                <div class="step-display">
+                    <strong>Trapezoidal Rule (n = ${n}):</strong><br>
+                    Δx = (${points[points.length-1].x} - ${points[0].x})/${n} = ${deltaX.toFixed(1)}<br>
+                    Area ≈ Σ ½[f(xᵢ)+f(xᵢ₊₁)]Δx = ${trapezoidalSum.toFixed(2)}
+                </div>
+            `;
+        }
+        
+        if (method === 'both') {
+            const difference = Math.abs(midpointSum - trapezoidalSum);
+            results += `
+                <div class="step-display">
+                    <strong>Comparison:</strong><br>
+                    Difference = |${midpointSum.toFixed(2)} - ${trapezoidalSum.toFixed(2)}| = ${difference.toFixed(2)}<br>
+                    The ${midpointSum > trapezoidalSum ? 'midpoint' : 'trapezoidal'} rule gives the larger estimate.
+                </div>
+            `;
+        }
+        
+        document.getElementById('integrationResults').innerHTML = results;
+    }
+    
+    toggleDataInput() {
+        const method = document.getElementById('dataInputMethod').value;
+        const functionInput = document.getElementById('functionInput');
+        const tableInput = document.getElementById('tableInput');
+        
+        if (method === 'function') {
+            functionInput.style.display = 'block';
+            tableInput.style.display = 'none';
+        } else {
+            functionInput.style.display = 'none';
+            tableInput.style.display = 'block';
+        }
+        
+        this.updateNumericalIntegration();
+    }
+    
+    animateIntegration() {
+        const n = parseInt(document.getElementById('numSubintervals').value);
+        let currentN = 1;
+        
+        const animate = () => {
+            document.getElementById('numSubintervals').value = currentN;
+            this.updateNumericalIntegration();
+            currentN++;
+            
+            if (currentN <= n) {
+                setTimeout(animate, 1000);
+            }
+        };
+        
+        animate();
+    }
+    
+    // Rational Functions Section
+    updateRationalFunction() {
+        const canvas = this.canvases.rationalCanvas;
+        const ctx = this.contexts.rationalCanvas;
+        if (!ctx) return;
+
+        ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+        this.drawAxes(ctx, canvas);
+        
+        const numerator = document.getElementById('numerator').value;
+        const denominator = document.getElementById('denominator').value;
+        const xRange = parseInt(document.getElementById('xRange').value);
+        
+        document.getElementById('xRangeValue').textContent = `±${xRange}`;
+        
+        // Update display
+        const displayNum = numerator.replace(/\*/g, '').replace(/\^/g, '^');
+        const displayDen = denominator.replace(/\*/g, '').replace(/\^/g, '^');
+        document.getElementById('rationalDisplay').innerHTML = `f(x) = (${displayNum})/(${displayDen})`;
+        
+        // Draw the rational function
+        this.drawRationalFunction(ctx, canvas, numerator, denominator, xRange);
+        
+        // Find and mark asymptotes and holes
+        this.markAsymptotesAndHoles(ctx, canvas, numerator, denominator, xRange);
+        
+        this.analyzeRationalFunction();
+    }
+    
+    drawRationalFunction(ctx, canvas, numerator, denominator, xRange) {
+        ctx.strokeStyle = '#2196F3';
+        ctx.lineWidth = 3;
+        
+        const scale = Math.min(canvas.width, canvas.height) / (2 * xRange) * 0.8;
+        
+        ctx.beginPath();
+        let first = true;
+        let lastY = null;
+        
+        for (let x = -xRange; x <= xRange; x += 0.1) {
+            try {
+                const numValue = this.evaluatePolynomial(numerator, x);
+                const denValue = this.evaluatePolynomial(denominator, x);
+                
+                if (Math.abs(denValue) > 1e-10) {
+                    const y = numValue / denValue;
+                    
+                    if (!isNaN(y) && isFinite(y) && Math.abs(y) < xRange * 2) {
+                        const canvasX = x * scale;
+                        const canvasY = y * scale;
+                        
+                        // Check for discontinuities
+                        if (lastY !== null && Math.abs(y - lastY) > xRange) {
+                            first = true;
+                        }
+                        
+                        if (first) {
+                            ctx.moveTo(canvasX, canvasY);
+                            first = false;
+                        } else {
+                            ctx.lineTo(canvasX, canvasY);
+                        }
+                        
+                        lastY = y;
+                    } else {
+                        first = true;
+                        lastY = null;
+                    }
+                } else {
+                    first = true;
+                    lastY = null;
+                }
+            } catch (e) {
+                first = true;
+                lastY = null;
+            }
+        }
+        ctx.stroke();
+    }
+    
+    evaluatePolynomial(polyStr, x) {
+        try {
+            let expr = polyStr
+                .replace(/\^/g, '**')
+                .replace(/x/g, `(${x})`)
+                .replace(/\*\*/g, '**');
+            return eval(expr);
+        } catch (e) {
+            return NaN;
+        }
+    }
+    
+    findPolynomialRoots(polyStr) {
+        // Simplified root finding for demonstration
+        const roots = [];
+        
+        // Test integer values from -10 to 10
+        for (let x = -10; x <= 10; x++) {
+            if (Math.abs(this.evaluatePolynomial(polyStr, x)) < 1e-10) {
+                roots.push(x);
+            }
+        }
+        
+        return roots;
+    }
+    
+    markAsymptotesAndHoles(ctx, canvas, numerator, denominator, xRange) {
+        const scale = Math.min(canvas.width, canvas.height) / (2 * xRange) * 0.8;
+        const denRoots = this.findPolynomialRoots(denominator);
+        
+        denRoots.forEach(root => {
+            const numValue = this.evaluatePolynomial(numerator, root);
+            const canvasX = root * scale;
+            
+            if (Math.abs(numValue) < 1e-10) {
+                // Hole (common factor)
+                ctx.strokeStyle = '#FF9800';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(canvasX, 0, 6, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                ctx.fillStyle = 'white';
+                ctx.fill();
+            } else {
+                // Vertical asymptote
+                ctx.strokeStyle = '#F44336';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(canvasX, -canvas.height/2);
+                ctx.lineTo(canvasX, canvas.height/2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        });
+    }
+    
+    analyzeRationalFunction() {
+        const numerator = document.getElementById('numerator').value;
+        const denominator = document.getElementById('denominator').value;
+        const analysisType = document.getElementById('rationalAnalysisType').value;
+        
+        const numRoots = this.findPolynomialRoots(numerator);
+        const denRoots = this.findPolynomialRoots(denominator);
+        
+        let results = '';
+        
+        if (analysisType === 'asymptotes' || analysisType === 'complete') {
+            results += `
+                <div class="step-display">
+                    <strong>Asymptotes and Holes Analysis:</strong><br>
+            `;
+            
+            if (denRoots.length > 0) {
+                results += `<strong>Denominator zeros:</strong> x = ${denRoots.join(', ')}<br>`;
+                
+                denRoots.forEach(root => {
+                    const numValue = this.evaluatePolynomial(numerator, root);
+                    if (Math.abs(numValue) < 1e-10) {
+                        results += `• x = ${root}: <span style="color: #FF9800;">Hole</span> (common factor)<br>`;
+                    } else {
+                        results += `• x = ${root}: <span style="color: #F44336;">Vertical Asymptote</span><br>`;
+                    }
+                });
+            } else {
+                results += 'No vertical asymptotes or holes found.<br>';
+            }
+            
+            results += `</div>`;
+        }
+        
+        if (analysisType === 'extrema' || analysisType === 'complete') {
+            results += `
+                <div class="step-display">
+                    <strong>Finding Relative Extrema:</strong><br>
+                    To find extrema, we need f'(x) = 0.<br>
+                    Using the quotient rule: f'(x) = [p'(x)q(x) - p(x)q'(x)] / [q(x)]²<br>
+                    <em>Calculate the derivative and solve f'(x) = 0</em><br>
+                    <em>Use the 1st or 2nd Derivative Test to classify critical points</em>
+                </div>
+            `;
+        }
+        
+        if (analysisType === 'complete') {
+            const yIntercept = this.evaluatePolynomial(numerator, 0) / this.evaluatePolynomial(denominator, 0);
+            results += `
+                <div class="step-display">
+                    <strong>Complete Analysis Summary:</strong><br>
+                    • Domain: All real numbers except x = ${denRoots.join(', ')}<br>
+                    • X-intercepts: ${numRoots.length > 0 ? `x = ${numRoots.join(', ')}` : 'None found'}<br>
+                    • Y-intercept: f(0) = ${isFinite(yIntercept) ? yIntercept.toFixed(3) : 'undefined'}<br>
+                    • End behavior determined by degree comparison<br>
+                    • Critical points found by solving f'(x) = 0
+                </div>
+            `;
+        }
+        
+        document.getElementById('rationalResults').innerHTML = results;
+    }
+    
+    findAsymptotesAndHoles() {
+        document.getElementById('rationalAnalysisType').value = 'asymptotes';
+        this.analyzeRationalFunction();
+    }
+    
+    findRationalExtrema() {
+        document.getElementById('rationalAnalysisType').value = 'extrema';
+        this.analyzeRationalFunction();
+    }
+    
+    drawFunction(ctx, canvas, funcStr, color, lineWidth) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        
+        const scale = 40;
+        let first = true;
+        
+        for (let x = -canvas.width/(2*scale); x <= canvas.width/(2*scale); x += 0.1) {
+            const y = this.evaluateFunction(funcStr, x);
+            
+            if (!isNaN(y) && isFinite(y) && Math.abs(y) < 15) {
+                const canvasX = x * scale;
+                const canvasY = y * scale;
+                
+                if (first) {
+                    ctx.moveTo(canvasX, canvasY);
+                    first = false;
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            } else {
+                first = true;
+            }
+        }
+        ctx.stroke();
+    }
+
     // Utility Functions
     evaluateFunction(funcStr, x) {
         try {
@@ -1544,6 +2065,40 @@ function performCompleteAnalysis() {
 
 function animateAnalysisSteps() {
     calculusApp.animateAnalysisSteps();
+}
+
+// Numerical Integration Functions
+function updateNumericalIntegration() {
+    calculusApp.updateNumericalIntegration();
+}
+
+function calculateIntegration() {
+    calculusApp.calculateIntegration();
+}
+
+function toggleDataInput() {
+    calculusApp.toggleDataInput();
+}
+
+function animateIntegration() {
+    calculusApp.animateIntegration();
+}
+
+// Rational Functions
+function updateRationalFunction() {
+    calculusApp.updateRationalFunction();
+}
+
+function analyzeRationalFunction() {
+    calculusApp.analyzeRationalFunction();
+}
+
+function findAsymptotesAndHoles() {
+    calculusApp.findAsymptotesAndHoles();
+}
+
+function findRationalExtrema() {
+    calculusApp.findRationalExtrema();
 }
 
 // Initialize the application when the page loads
