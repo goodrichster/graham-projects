@@ -11,6 +11,7 @@ A collection of interactive mathematical applications built with modern web tech
 - **Unit Circle Explorer** - Comprehensive trigonometry with exact mathematical values
 - **Polyhedron Explorer** - 3D geometric solids with Euler's formula verification
 - **Physics Simulations** - Interactive AP Physics 1 concepts and visualizations
+- **Calculus Simulations** - Comprehensive AP Calculus AB derivatives, integration, and rational function analysis
 
 ## 📱 Features
 
@@ -58,6 +59,28 @@ A collection of interactive mathematical applications built with modern web tech
 - **Exact Mathematical Notation**: Uses π notation and exact radical representations
 - **AP Physics 1 Aligned**: Covers core concepts from kinematics to energy conservation
 - **Multiple Simulation Types**: Six different physics concepts with interactive controls
+
+### 📊 Calculus Simulations
+- **Numerical Integration**: Interactive visualization of integration approximation methods
+- **Riemann Sums**: Left and Right Riemann sum calculations with color-coded rectangles
+- **Midpoint Rule**: Enhanced midpoint approximation with visual representation
+- **Trapezoidal Rule**: Accurate trapezoidal integration with geometric visualization
+- **Method Comparison**: Side-by-side comparison of all four numerical integration techniques
+- **Real-time Calculations**: Displays exact numerical values for each approximation method
+- **Data Table Integration**: Uses realistic AP Calculus data points for authentic problem solving
+- **Responsive Scaling**: Automatically adjusts canvas scale to accommodate large data ranges (y-values up to 150)
+- **Color-coded Visualization**: Orange for left Riemann, purple for right Riemann, blue for midpoint, green for trapezoidal
+- **Rectangle Rendering**: Accurate geometric representation with proper baseline calculations
+- **Rational Function Analysis**: Complete analysis of rational functions with asymptote detection
+- **Vertical Asymptotes**: Automatic detection and visualization of vertical asymptotes
+- **Horizontal Asymptotes**: Analysis based on polynomial degree comparison
+- **Slant Asymptotes**: Polynomial long division for oblique asymptote computation
+- **Hole Detection**: Identifies removable discontinuities in rational functions
+- **Critical Points**: Finds and analyzes local extrema and inflection points
+- **End Behavior Analysis**: Mathematical explanation of function behavior at infinity
+- **Interactive Function Input**: Custom rational function entry with real-time analysis
+- **Step-by-step Solutions**: Detailed mathematical explanations for all computations
+- **AP Calculus AB Aligned**: Covers numerical integration and rational function analysis from AP curriculum
 
 ## 🛠 Technical Specifications
 
@@ -123,6 +146,7 @@ A collection of interactive mathematical applications built with modern web tech
 - **Trigonometry**: Unit circle, exact values, and function relationships
 - **Solid Geometry**: 3D polyhedra and Euler's formula (V - E + F = 2)
 - **Physics**: Classical mechanics concepts from AP Physics 1 curriculum including circular motion
+- **Calculus**: Numerical integration methods, Riemann sums, rational function analysis, and asymptote computation
 
 ### Educational Value
 - **Exact Representations**: Teaches symbolic vs. decimal mathematics
@@ -159,6 +183,9 @@ graham-projects/
 ├── physics/              # Physics simulations
 │   ├── index.html
 │   └── physics.js
+├── calculus/             # Calculus simulations
+│   ├── index.html
+│   └── calculus.js
 └── README.md
 ```
 
@@ -188,11 +215,14 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 - 3D graphing capabilities
 - Statistical analysis tools
 - Advanced trigonometric functions
-- Calculus visualization tools
+- Additional calculus topics (limits, derivatives, series convergence)
 - Additional physics simulations (waves, electricity, magnetism)
+- Symbolic algebra and equation solving
+- Probability and statistics modules
 
 ## 📈 Version History
 
+- **v3.0.0** - Added comprehensive Calculus Simulations with numerical integration and rational function analysis
 - **v2.0.0** - Complete suite with all four applications
 - **v1.1.0** - Added Unit Circle Explorer with exact values
 - **v1.0.0** - Initial release with Calculator and Polygon Explorer
