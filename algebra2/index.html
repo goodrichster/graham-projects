@@ -3,48 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algebra 2 Lessons - Graham's Mathematical Applications</title>
+    <title>Algebra 2 - Science and Math Projects</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
+        
         .container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             padding: 30px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
-
+        
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
-
+        
         h1 {
             color: #333;
             margin-bottom: 10px;
             font-size: 2.5rem;
             font-weight: 300;
         }
-
+        
         .subtitle {
             color: #666;
             margin-bottom: 20px;
             font-size: 1.1rem;
         }
-
+        
         .back-link {
             display: inline-block;
             color: #667eea;
@@ -56,24 +52,71 @@
             border-radius: 20px;
             transition: all 0.3s ease;
         }
-
+        
         .back-link:hover {
             background: #667eea;
             color: white;
         }
-
-        .simulation-tabs {
+        
+        .unit-navigation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .unit-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .unit-card.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .unit-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .unit-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .unit-weeks {
+            font-size: 0.8rem;
+            margin-top: 10px;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+        
+        .topic-tabs {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 30px;
             border-bottom: 2px solid #f0f0f0;
+            overflow-x: auto;
         }
-
-        .tab-button {
+        
+        .topic-button {
             background: none;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 16px;
             cursor: pointer;
             border-radius: 10px 10px 0 0;
             font-weight: 500;
@@ -81,50 +124,51 @@
             transition: all 0.3s ease;
             font-size: 0.9rem;
             white-space: nowrap;
+            flex-shrink: 0;
         }
-
-        .tab-button.active {
+        
+        .topic-button.active {
             background: #667eea;
             color: white;
         }
-
-        .tab-button:hover {
+        
+        .topic-button:hover {
             background: #f0f0f0;
         }
-
-        .tab-button.active:hover {
+        
+        .topic-button.active:hover {
             background: #5a6fd8;
         }
-
-        .simulation-content {
+        
+        .unit-content, .topic-content {
             display: none;
             animation: fadeIn 0.3s ease;
         }
-
-        .simulation-content.active {
+        
+        .unit-content.active, .topic-content.active {
             display: block;
         }
-
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        .simulation-area {
+        
+        .content-area {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr 350px;
             gap: 30px;
             margin-bottom: 30px;
         }
-
-        .canvas-container {
+        
+        .visualization-container {
             background: #f8f9fa;
             border-radius: 15px;
             padding: 20px;
             position: relative;
             min-height: 500px;
         }
-
+        
         .algebra-canvas {
             border: 2px solid #e9ecef;
             border-radius: 10px;
@@ -133,17 +177,18 @@
             height: 500px;
             display: block;
         }
-
+        
         .controls-panel {
             background: #f8f9fa;
             border-radius: 15px;
             padding: 20px;
+            height: fit-content;
         }
-
+        
         .control-group {
             margin-bottom: 20px;
         }
-
+        
         .control-label {
             display: block;
             margin-bottom: 8px;
@@ -151,7 +196,7 @@
             color: #333;
             font-size: 0.9rem;
         }
-
+        
         .control-input {
             width: 100%;
             padding: 10px;
@@ -160,12 +205,12 @@
             font-size: 1rem;
             transition: border-color 0.3s ease;
         }
-
+        
         .control-input:focus {
             outline: none;
             border-color: #667eea;
         }
-
+        
         .control-button {
             background: #667eea;
             color: white;
@@ -178,104 +223,56 @@
             width: 100%;
             margin-bottom: 10px;
         }
-
+        
         .control-button:hover {
             background: #5a6fd8;
             transform: translateY(-2px);
         }
-
+        
         .info-panel {
             background: #e8f4fd;
             border-radius: 10px;
             padding: 15px;
             margin-top: 20px;
         }
-
+        
         .formula-display {
             background: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 8px;
             padding: 15px;
             margin: 15px 0;
-            font-family: 'Courier New', monospace;
+            font-family: 'Times New Roman', serif;
             font-size: 1.1rem;
             text-align: center;
         }
-
-        .step-display {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 12px;
-            margin: 10px 0;
-            font-size: 0.95rem;
-        }
-
+        
         .explanation-section {
             margin-top: 30px;
             padding: 20px;
             background: #f8f9fa;
             border-radius: 15px;
         }
-
+        
         .explanation-section h3 {
             color: #495057;
             margin-bottom: 15px;
             font-size: 1.3rem;
         }
-
+        
         .explanation-section p {
             line-height: 1.6;
             margin-bottom: 12px;
             color: #6c757d;
         }
-
-        .math-expression {
-            background: #e9ecef;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
-
-        .essential-questions {
-            background: #e8f4fd;
-            border: 2px solid #2196F3;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .essential-questions h4 {
-            color: #1976D2;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .essential-questions ul {
-            margin-left: 20px;
-        }
-
-        .essential-questions li {
-            margin-bottom: 8px;
-            color: #1565C0;
-        }
-
+        
         @media (max-width: 768px) {
-            .simulation-area {
+            .content-area {
                 grid-template-columns: 1fr;
             }
-            
-            .simulation-tabs {
-                overflow-x: auto;
-                white-space: nowrap;
+            .unit-navigation {
+                grid-template-columns: 1fr;
             }
-            
-            .tab-button {
-                min-width: 120px;
-                flex-shrink: 0;
-            }
-
             .container {
                 padding: 15px;
             }
@@ -286,344 +283,191 @@
     <div class="container">
         <div class="header">
             <a href="../index.html" class="back-link">← Back to Main Menu</a>
-            <h1>Algebra 2 Lessons</h1>
-            <p class="subtitle">Interactive Mathematical Modeling & Analysis</p>
+            <h1>Algebra 2</h1>
+            <p class="subtitle">Comprehensive High School Algebra II Curriculum</p>
         </div>
         
-        <div class="simulation-tabs">
-            <button class="tab-button active" onclick="switchSimulation('functions-features')">Functions</button>
-            <button class="tab-button" onclick="switchSimulation('expressions')">Expressions</button>
-            <button class="tab-button" onclick="switchSimulation('quadratics')">Quadratics</button>
-            <button class="tab-button" onclick="switchSimulation('exponentials')">Exponentials</button>
-            <button class="tab-button" onclick="switchSimulation('transformations')">Transformations</button>
-            <button class="tab-button" onclick="switchSimulation('inverses')">Inverses</button>
-            <button class="tab-button" onclick="switchSimulation('polynomials')">Polynomials</button>
-            <button class="tab-button" onclick="switchSimulation('trigonometric')">Trigonometric</button>
-            <button class="tab-button" onclick="switchSimulation('probability')">Probability</button>
-        </div>
-
-        <!-- Functions & Features -->
-        <div id="functions-features" class="simulation-content active">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="functionsCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Function Type:</label>
-                        <select id="functionType" class="control-input" onchange="updateFunctionFeatures()">
-                            <option value="linear">Linear: f(x) = mx + b</option>
-                            <option value="quadratic">Quadratic: f(x) = ax² + bx + c</option>
-                            <option value="cubic">Cubic: f(x) = ax³ + bx² + cx + d</option>
-                            <option value="rational">Rational: f(x) = p(x)/q(x)</option>
-                            <option value="exponential">Exponential: f(x) = ab^x</option>
-                            <option value="logarithmic">Logarithmic: f(x) = a·log(x)</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Parameter a:</label>
-                        <input type="number" id="paramA" class="control-input" value="1" step="0.1" onchange="updateFunctionFeatures()">
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Parameter b:</label>
-                        <input type="number" id="paramB" class="control-input" value="0" step="0.1" onchange="updateFunctionFeatures()">
-                    </div>
-                    <button class="control-button" onclick="analyzeFunctionFeatures()">Analyze Features</button>
-                    <button class="control-button" onclick="findDomainRange()">Find Domain & Range</button>
-                    
-                    <div class="info-panel">
-                        <h4>Function Features:</h4>
-                        <div id="functionAnalysis"></div>
-                    </div>
-                </div>
+        <!-- Unit Navigation -->
+        <div class="unit-navigation">
+            <div class="unit-card active" onclick="switchUnit('unit1')">
+                <div class="unit-title">Unit 1: Functions and Equations</div>
+                <div class="unit-description">Domain, range, transformations, quadratics, and complex numbers</div>
+                <div class="unit-weeks">Weeks 1-6</div>
             </div>
-        </div>
-
-        <!-- Expression Operations -->
-        <div id="expressions" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="expressionCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Operation:</label>
-                        <select id="operationType" class="control-input" onchange="updateExpressionOperation()">
-                            <option value="polynomial-add">Polynomial Addition</option>
-                            <option value="polynomial-multiply">Polynomial Multiplication</option>
-                            <option value="rational-simplify">Rational Simplification</option>
-                            <option value="radical-operations">Radical Operations</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Expression 1:</label>
-                        <input type="text" id="expression1" class="control-input" value="x^2 + 3x + 2">
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Expression 2:</label>
-                        <input type="text" id="expression2" class="control-input" value="2x + 1">
-                    </div>
-                    <button class="control-button" onclick="performOperation()">Perform Operation</button>
-                    
-                    <div class="info-panel">
-                        <h4>Result:</h4>
-                        <div id="operationResult"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit2')">
+                <div class="unit-title">Unit 2: Polynomials</div>
+                <div class="unit-description">Graphing, operations, factoring, and solving polynomial equations</div>
+                <div class="unit-weeks">Weeks 7-11</div>
             </div>
-        </div>
-
-        <!-- Quadratic Functions -->
-        <div id="quadratics" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="quadraticCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Coefficient a:</label>
-                        <input type="number" id="quadraticA" class="control-input" value="1" step="0.1" onchange="updateQuadratic()">
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Coefficient b:</label>
-                        <input type="number" id="quadraticB" class="control-input" value="0" step="0.1" onchange="updateQuadratic()">
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Coefficient c:</label>
-                        <input type="number" id="quadraticC" class="control-input" value="0" step="0.1" onchange="updateQuadratic()">
-                    </div>
-                    <button class="control-button" onclick="analyzeQuadratic()">Analyze Quadratic</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="quadraticAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit3')">
+                <div class="unit-title">Unit 3: Rational & Radical Functions</div>
+                <div class="unit-description">Rational exponents, inverse functions, and radical equations</div>
+                <div class="unit-weeks">Weeks 12-15</div>
             </div>
-        </div>
-
-        <!-- Exponential & Logarithmic -->
-        <div id="exponentials" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="expLogCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Function Type:</label>
-                        <select id="expLogType" class="control-input" onchange="updateExpLog()">
-                            <option value="exponential">Exponential: f(x) = ab^x</option>
-                            <option value="logarithmic">Logarithmic: f(x) = log_b(x)</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Base:</label>
-                        <input type="number" id="expLogBase" class="control-input" value="2" step="0.1" onchange="updateExpLog()">
-                    </div>
-                    <button class="control-button" onclick="analyzeExpLog()">Analyze Function</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="expLogAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit4')">
+                <div class="unit-title">Unit 4: Exponentials & Logarithms</div>
+                <div class="unit-description">Growth, decay, compound interest, and logarithmic properties</div>
+                <div class="unit-weeks">Weeks 16-20</div>
             </div>
-        </div>
-
-        <!-- Function Transformations -->
-        <div id="transformations" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="transformationCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Base Function:</label>
-                        <select id="baseFunction" class="control-input" onchange="updateTransformation()">
-                            <option value="quadratic">f(x) = x²</option>
-                            <option value="absolute">f(x) = |x|</option>
-                            <option value="sqrt">f(x) = √x</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Vertical Shift:</label>
-                        <input type="range" id="verticalShift" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="updateTransformation()">
-                        <span id="verticalShiftValue">0.0</span>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Horizontal Shift:</label>
-                        <input type="range" id="horizontalShift" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="updateTransformation()">
-                        <span id="horizontalShiftValue">0.0</span>
-                    </div>
-                    <button class="control-button" onclick="analyzeTransformation()">Analyze Transformation</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="transformationAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit5')">
+                <div class="unit-title">Unit 5: Rational Functions</div>
+                <div class="unit-description">Asymptotes, operations, and rational equations</div>
+                <div class="unit-weeks">Weeks 21-23</div>
             </div>
-        </div>
-
-        <!-- Function Inverses -->
-        <div id="inverses" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="inverseCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Function:</label>
-                        <select id="inverseFunction" class="control-input" onchange="updateInverse()">
-                            <option value="linear">f(x) = 2x + 1</option>
-                            <option value="quadratic">f(x) = x² (x ≥ 0)</option>
-                            <option value="exponential">f(x) = 2^x</option>
-                        </select>
-                    </div>
-                    <button class="control-button" onclick="analyzeInverse()">Analyze Inverse</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="inverseAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit6')">
+                <div class="unit-title">Unit 6: Sequences & Series</div>
+                <div class="unit-description">Explicit and recursive formulas, arithmetic and geometric sequences</div>
+                <div class="unit-weeks">Weeks 24-25</div>
             </div>
-        </div>
-
-        <!-- Polynomial & Rational Functions -->
-        <div id="polynomials" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="polynomialCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Function Type:</label>
-                        <select id="polynomialType" class="control-input" onchange="updatePolynomial()">
-                            <option value="polynomial">Polynomial</option>
-                            <option value="rational">Rational Function</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Degree/Function:</label>
-                        <input type="text" id="polynomialFunction" class="control-input" value="x^3 - 2x^2 - x + 2" onchange="updatePolynomial()">
-                    </div>
-                    <button class="control-button" onclick="analyzePolynomial()">Analyze Function</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="polynomialAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit7')">
+                <div class="unit-title">Unit 7: Trigonometric Functions</div>
+                <div class="unit-description">Unit circle, identities, and trigonometric graphs</div>
+                <div class="unit-weeks">Weeks 26-29</div>
             </div>
-        </div>
-
-        <!-- Trigonometric Functions -->
-        <div id="trigonometric" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="trigCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Function:</label>
-                        <select id="trigFunction" class="control-input" onchange="updateTrigonometric()">
-                            <option value="sine">f(x) = sin(x)</option>
-                            <option value="cosine">f(x) = cos(x)</option>
-                            <option value="tangent">f(x) = tan(x)</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Amplitude:</label>
-                        <input type="range" id="amplitude" class="control-input" min="0.5" max="3" step="0.1" value="1" oninput="updateTrigonometric()">
-                        <span id="amplitudeValue">1.0</span>
-                    </div>
-                    <button class="control-button" onclick="analyzeTrigonometric()">Analyze Function</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="trigAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit8')">
+                <div class="unit-title">Unit 8: Probability</div>
+                <div class="unit-description">Compound events, conditional probability, and Bayes' theorem</div>
+                <div class="unit-weeks">Weeks 30-31</div>
             </div>
-        </div>
-
-        <!-- Probability & Statistics -->
-        <div id="probability" class="simulation-content">
-            <div class="simulation-area">
-                <div class="canvas-container">
-                    <canvas id="probabilityCanvas" class="algebra-canvas"></canvas>
-                </div>
-                <div class="controls-panel">
-                    <div class="control-group">
-                        <label class="control-label">Distribution:</label>
-                        <select id="distributionType" class="control-input" onchange="updateProbability()">
-                            <option value="normal">Normal Distribution</option>
-                            <option value="binomial">Binomial Distribution</option>
-                            <option value="uniform">Uniform Distribution</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Parameter 1:</label>
-                        <input type="number" id="param1" class="control-input" value="0" step="0.1" onchange="updateProbability()">
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Parameter 2:</label>
-                        <input type="number" id="param2" class="control-input" value="1" step="0.1" onchange="updateProbability()">
-                    </div>
-                    <button class="control-button" onclick="analyzeProbability()">Analyze Distribution</button>
-                    
-                    <div class="info-panel">
-                        <h4>Analysis:</h4>
-                        <div id="probabilityAnalysis"></div>
-                    </div>
-                </div>
+            <div class="unit-card" onclick="switchUnit('unit9')">
+                <div class="unit-title">Unit 9: Statistics</div>
+                <div class="unit-description">Data distributions, binomial probability, and empirical rule</div>
+                <div class="unit-weeks">Week 32</div>
             </div>
         </div>
         
-        <div class="essential-questions">
-            <h4>Course Essential Questions</h4>
-            <ul>
-                <li>What are the relationships among exponents, radicals, logarithms, exponential functions, and logarithmic functions?</li>
-                <li>How can we create, analyze, and describe different kinds of graphs?</li>
-                <li>How do we create and interpret models?</li>
-                <li>How can we utilize equations to solve problems?</li>
-            </ul>
+        <!-- Unit 1: Functions and Equations -->
+        <div id="unit1" class="unit-content active">
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('domain-range')">Domain & Range</button>
+                <button class="topic-button" onclick="switchTopic('function-characteristics')">Characteristics</button>
+                <button class="topic-button" onclick="switchTopic('transformations')">Transformations</button>
+                <button class="topic-button" onclick="switchTopic('complex-numbers')">Complex Numbers</button>
+                <button class="topic-button" onclick="switchTopic('quadratic-formula')">Quadratic Formula</button>
+                <button class="topic-button" onclick="switchTopic('quadratic-systems')">Quadratic Systems</button>
+            </div>
+
+            <!-- Domain & Range -->
+            <div id="domain-range" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="domainRangeCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Function Type:</label>
+                            <select id="domainFunction" class="control-input" onchange="updateDomainRange()">
+                                <option value="linear">Linear: f(x) = mx + b</option>
+                                <option value="quadratic">Quadratic: f(x) = ax² + bx + c</option>
+                                <option value="rational">Rational: f(x) = 1/x</option>
+                                <option value="radical">Radical: f(x) = √x</option>
+                                <option value="exponential">Exponential: f(x) = 2^x</option>
+                                <option value="logarithmic">Logarithmic: f(x) = log(x)</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="analyzeDomainRange()">Analyze Domain & Range</button>
+                        <button class="control-button" onclick="showIntervalNotation()">Show Interval Notation</button>
+                        
+                        <div class="info-panel">
+                            <h4>Analysis Results:</h4>
+                            <div id="domainRangeResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other topics for Unit 1 would follow similar structure -->
+            <div id="function-characteristics" class="topic-content">
+                <h3>Function Characteristics</h3>
+                <p>Analyze increasing/decreasing intervals, positive/negative regions, and extrema.</p>
+            </div>
+
+            <div id="transformations" class="topic-content">
+                <h3>Function Transformations</h3>
+                <p>Explore the effects of parameters a, h, and k on parent functions.</p>
+            </div>
+
+            <div id="complex-numbers" class="topic-content">
+                <h3>Complex Numbers</h3>
+                <p>Operations with complex numbers and solving quadratic equations.</p>
+            </div>
+
+            <div id="quadratic-formula" class="topic-content">
+                <h3>Quadratic Formula</h3>
+                <p>Derive and apply the quadratic formula to solve equations.</p>
+            </div>
+
+            <div id="quadratic-systems" class="topic-content">
+                <h3>Quadratic Systems</h3>
+                <p>Solve and graph nonlinear systems of equations.</p>
+            </div>
+        </div>
+
+        <!-- Units 2-9 (Placeholder structure) -->
+        <div id="unit2" class="unit-content">
+            <h2>Unit 2: Polynomials (Weeks 7-11)</h2>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('polynomial-graphs')">Polynomial Graphs</button>
+                <button class="topic-button" onclick="switchTopic('polynomial-operations')">Operations</button>
+                <button class="topic-button" onclick="switchTopic('factoring')">Factoring</button>
+                <button class="topic-button" onclick="switchTopic('polynomial-division')">Division</button>
+                <button class="topic-button" onclick="switchTopic('polynomial-equations')">Equations</button>
+            </div>
+            <div id="polynomial-graphs" class="topic-content active">
+                <h3>Polynomial Graphs</h3>
+                <p>Graph polynomial functions and analyze their characteristics using degree and intercept form.</p>
+            </div>
+        </div>
+
+        <div id="unit3" class="unit-content">
+            <h2>Unit 3: Rational Expressions and Radical Functions (Weeks 12-15)</h2>
+            <p>Rational exponents, radicals, inverse functions, and radical equations.</p>
+        </div>
+
+        <div id="unit4" class="unit-content">
+            <h2>Unit 4: Exponentials and Logarithms (Weeks 16-20)</h2>
+            <p>Exponential growth/decay, compound interest, logarithmic properties, and equations.</p>
+        </div>
+
+        <div id="unit5" class="unit-content">
+            <h2>Unit 5: Rational Functions and Equations (Weeks 21-23)</h2>
+            <p>Rational functions, asymptotes, operations with rational expressions, and equations.</p>
+        </div>
+
+        <div id="unit6" class="unit-content">
+            <h2>Unit 6: Sequences and Series (Weeks 24-25)</h2>
+            <p>Explicit and recursive formulas, arithmetic and geometric sequences and series.</p>
+        </div>
+
+        <div id="unit7" class="unit-content">
+            <h2>Unit 7: Trigonometric Functions and Identities (Weeks 26-29)</h2>
+            <p>Unit circle, trigonometric functions, graphs, and identities.</p>
+        </div>
+
+        <div id="unit8" class="unit-content">
+            <h2>Unit 8: Probability (Weeks 30-31)</h2>
+            <p>Compound events, conditional probability, independence, and Bayes' theorem.</p>
+        </div>
+
+        <div id="unit9" class="unit-content">
+            <h2>Unit 9: Statistics (Week 32)</h2>
+            <p>Data distributions, binomial probability, Pascal's triangle, and empirical rule.</p>
         </div>
 
         <!-- Educational Content Section -->
         <div class="explanation-section">
             <h3>Understanding Algebra 2 Concepts</h3>
-            <p><strong>Functions and Their Features</strong> form the foundation of advanced mathematics. Understanding how to identify, analyze, and work with different types of functions is crucial for modeling real-world situations and solving complex problems. Functions describe relationships between variables and help us understand how one quantity depends on another.</p>
+            <p><strong>Algebra 2</strong> builds upon fundamental algebraic concepts to explore more complex functions, equations, and mathematical relationships. This comprehensive course covers essential topics for college preparation and standardized testing.</p>
             
-            <p><strong>Expression Operations</strong> involve manipulating algebraic expressions using properties of exponents, radicals, and logarithms. These skills are essential for simplifying complex expressions and solving equations efficiently. Mastering these operations allows students to work with polynomial, rational, radical, and exponential expressions confidently.</p>
+            <p><strong>Functions and Equations</strong> form the foundation, teaching students to analyze domain, range, and transformations while solving quadratic equations and working with complex numbers.</p>
             
-            <p><strong>Quadratic Functions</strong> appear in many real-world applications, from projectile motion to optimization problems. Understanding different forms (standard, vertex, factored) provides multiple approaches to problem-solving. The <span class="math-expression">vertex form</span> reveals the function's maximum or minimum, while the <span class="math-expression">factored form</span> shows the zeros directly.</p>
+            <p><strong>Polynomial Functions</strong> introduce higher-degree equations, factoring techniques, and polynomial division methods essential for advanced mathematics.</p>
             
-            <p><strong>Exponential and Logarithmic Functions</strong> model growth and decay processes in nature, finance, and technology. The inverse relationship between these functions is fundamental to understanding mathematical modeling. Exponential functions show rapid growth or decay, while logarithms help us solve for time or determine rates of change.</p>
+            <p><strong>Exponential and Logarithmic Functions</strong> model real-world growth and decay phenomena, with applications in science, finance, and population studies.</p>
             
-            <p><strong>Function Transformations</strong> allow us to modify basic functions to fit specific situations. Understanding how changes to parameters affect graphs helps in creating mathematical models. Transformations include:</p>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li><span class="math-expression">Vertical shifts</span>: f(x) + k moves the graph up or down</li>
-                <li><span class="math-expression">Horizontal shifts</span>: f(x - h) moves the graph left or right</li>
-                <li><span class="math-expression">Vertical stretches/compressions</span>: a·f(x) changes the graph's height</li>
-                <li><span class="math-expression">Horizontal stretches/compressions</span>: f(bx) changes the graph's width</li>
-            </ul>
+            <p><strong>Trigonometric Functions</strong> connect algebra with geometry, introducing periodic functions and their applications in modeling cyclical behavior.</p>
             
-            <p><strong>Function Inverses</strong> reveal the bidirectional nature of many mathematical relationships. When a function has an inverse, we can "undo" the original function's operation. This concept is particularly important with exponential and logarithmic functions, which are inverses of each other.</p>
-            
-            <p><strong>Polynomial and Rational Functions</strong> help model complex behaviors with multiple turning points and asymptotes. Understanding end behavior, zeros, and discontinuities is crucial for graphing and analysis. These functions appear in economics, physics, and engineering applications.</p>
-            
-            <p><strong>Trigonometric Functions</strong> model periodic phenomena such as sound waves, seasonal changes, and mechanical oscillations. The unit circle provides the foundation for understanding these functions and their transformations. Key concepts include amplitude, period, phase shift, and vertical displacement.</p>
-            
-            <p><strong>Probability and Statistics</strong> help us understand and quantify uncertainty in real-world situations. Different probability distributions model various types of random phenomena:</p>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li><span class="math-expression">Normal Distribution</span>: Models many natural phenomena and measurement errors</li>
-                <li><span class="math-expression">Uniform Distribution</span>: All outcomes equally likely within a range</li>
-                <li><span class="math-expression">Exponential Distribution</span>: Models waiting times and reliability</li>
-            </ul>
-            
-            <p><strong>Mathematical Modeling</strong> is the central theme connecting all these concepts. Whether we're analyzing business trends, predicting population growth, or optimizing resource allocation, Algebra 2 concepts provide the tools needed to create, analyze, and interpret mathematical models that solve real-world problems.</p>
+            <p><strong>Probability and Statistics</strong> provide essential skills for data analysis and decision-making in an increasingly data-driven world.</p>
         </div>
     </div>
 

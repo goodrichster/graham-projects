@@ -1338,3 +1338,501 @@ function analyzeProbability() {
 document.addEventListener('DOMContentLoaded', function() {
     window.algebra2Sim = new Algebra2Simulations();
 });
+// Algebra 2 - Comprehensive High School Curriculum
+// Interactive mathematical applications covering all 9 units
+
+class Algebra2Application {
+    constructor() {
+        this.currentUnit = 'unit1';
+        this.currentTopic = 'domain-range';
+        this.canvases = {};
+        this.contexts = {};
+        
+        // Initialize when DOM is loaded
+        setTimeout(() => {
+            this.initializeCanvases();
+            this.setupEventListeners();
+            this.initializeUnit('unit1');
+        }, 100);
+    }
+
+    initializeCanvases() {
+        const canvasIds = [
+            'domainRangeCanvas', 'characteristicsCanvas', 'transformationsCanvas',
+            'complexCanvas', 'quadraticCanvas', 'systemsCanvas', 'polynomialCanvas'
+        ];
+        
+        canvasIds.forEach(id => {
+            const canvas = document.getElementById(id);
+            if (canvas) {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                
+                this.canvases[id] = canvas;
+                const ctx = canvas.getContext('2d');
+                this.contexts[id] = ctx;
+                
+                // Set up coordinate system
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.scale(1, -1); // Flip y-axis for mathematical coordinate system
+            }
+        });
+    }
+
+    setupEventListeners() {
+        // Add keyboard shortcuts for navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1': case '2': case '3': case '4': case '5':
+                    case '6': case '7': case '8': case '9':
+                        e.preventDefault();
+                        this.switchUnit(`unit${e.key}`);
+                        break;
+                }
+            }
+        });
+    }
+
+    initializeUnit(unitId) {
+        this.currentUnit = unitId;
+        this.updateActiveUnitCard();
+        
+        // Initialize the first topic for the unit
+        const firstTopic = this.getFirstTopicForUnit(unitId);
+        if (firstTopic) {
+            this.switchTopic(firstTopic);
+        }
+    }
+
+    updateActiveUnitCard() {
+        document.querySelectorAll('.unit-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        
+        const unitCards = document.querySelectorAll('.unit-card');
+        const unitIndex = parseInt(this.currentUnit.replace('unit', '')) - 1;
+        if (unitCards[unitIndex]) {
+            unitCards[unitIndex].classList.add('active');
+        }
+    }
+
+    getFirstTopicForUnit(unitId) {
+        const topicMappings = {
+            'unit1': 'domain-range',
+            'unit2': 'polynomial-graphs',
+            'unit3': 'rational-exponents',
+            'unit4': 'exponential-growth',
+            'unit5': 'rational-functions',
+            'unit6': 'explicit-formulas',
+            'unit7': 'unit-circle',
+            'unit8': 'compound-events',
+            'unit9': 'data-distributions'
+        };
+        return topicMappings[unitId];
+    }
+
+    // Unit 1: Functions and Equations Methods
+
+    updateDomainRange() {
+        const functionType = document.getElementById('domainFunction')?.value;
+        const canvas = this.canvases['domainRangeCanvas'];
+        const ctx = this.contexts['domainRangeCanvas'];
+        
+        if (!canvas || !ctx) return;
+
+        this.clearCanvas(ctx, canvas);
+        this.drawAxes(ctx, canvas);
+        
+        // Draw the selected function
+        this.drawFunction(ctx, canvas, functionType);
+        
+        // Update analysis display
+        this.displayDomainRangeAnalysis(functionType);
+    }
+
+    analyzeDomainRange() {
+        const functionType = document.getElementById('domainFunction')?.value;
+        const resultsDiv = document.getElementById('domainRangeResults');
+        
+        if (!resultsDiv) return;
+
+        const analysis = this.getDomainRangeAnalysis(functionType);
+        resultsDiv.innerHTML = `
+            <h5>${analysis.function}</h5>
+            <p><strong>Domain:</strong> ${analysis.domain}</p>
+            <p><strong>Range:</strong> ${analysis.range}</p>
+            <p><strong>End Behavior:</strong></p>
+            <ul>
+                <li>As x → -∞: ${analysis.endBehavior.left}</li>
+                <li>As x → +∞: ${analysis.endBehavior.right}</li>
+            </ul>
+        `;
+    }
+
+    showIntervalNotation() {
+        const functionType = document.getElementById('domainFunction')?.value;
+        const resultsDiv = document.getElementById('domainRangeResults');
+        
+        if (!resultsDiv) return;
+
+        const intervals = this.getIntervalNotation(functionType);
+        resultsDiv.innerHTML += `
+            <h5>Interval Notation:</h5>
+            <p><strong>Domain:</strong> ${intervals.domain}</p>
+            <p><strong>Range:</strong> ${intervals.range}</p>
+        `;
+    }
+
+    getDomainRangeAnalysis(functionType) {
+        const analyses = {
+            'linear': {
+                function: 'f(x) = mx + b',
+                domain: 'All real numbers',
+                range: 'All real numbers',
+                endBehavior: {
+                    left: 'f(x) → -∞ (if m > 0) or +∞ (if m < 0)',
+                    right: 'f(x) → +∞ (if m > 0) or -∞ (if m < 0)'
+                }
+            },
+            'quadratic': {
+                function: 'f(x) = ax² + bx + c',
+                domain: 'All real numbers',
+                range: 'y ≥ k (if a > 0) or y ≤ k (if a < 0)',
+                endBehavior: {
+                    left: 'f(x) → +∞ (if a > 0) or -∞ (if a < 0)',
+                    right: 'f(x) → +∞ (if a > 0) or -∞ (if a < 0)'
+                }
+            },
+            'rational': {
+                function: 'f(x) = 1/x',
+                domain: 'All real numbers except x = 0',
+                range: 'All real numbers except y = 0',
+                endBehavior: {
+                    left: 'f(x) → 0',
+                    right: 'f(x) → 0'
+                }
+            },
+            'radical': {
+                function: 'f(x) = √x',
+                domain: 'x ≥ 0',
+                range: 'y ≥ 0',
+                endBehavior: {
+                    left: 'Not defined',
+                    right: 'f(x) → +∞'
+                }
+            },
+            'exponential': {
+                function: 'f(x) = 2^x',
+                domain: 'All real numbers',
+                range: 'y > 0',
+                endBehavior: {
+                    left: 'f(x) → 0',
+                    right: 'f(x) → +∞'
+                }
+            },
+            'logarithmic': {
+                function: 'f(x) = log(x)',
+                domain: 'x > 0',
+                range: 'All real numbers',
+                endBehavior: {
+                    left: 'f(x) → -∞',
+                    right: 'f(x) → +∞'
+                }
+            }
+        };
+
+        return analyses[functionType] || analyses['linear'];
+    }
+
+    getIntervalNotation(functionType) {
+        const intervals = {
+            'linear': { domain: '(-∞, ∞)', range: '(-∞, ∞)' },
+            'quadratic': { domain: '(-∞, ∞)', range: '[k, ∞) or (-∞, k]' },
+            'rational': { domain: '(-∞, 0) ∪ (0, ∞)', range: '(-∞, 0) ∪ (0, ∞)' },
+            'radical': { domain: '[0, ∞)', range: '[0, ∞)' },
+            'exponential': { domain: '(-∞, ∞)', range: '(0, ∞)' },
+            'logarithmic': { domain: '(0, ∞)', range: '(-∞, ∞)' }
+        };
+
+        return intervals[functionType] || intervals['linear'];
+    }
+
+    // Drawing Methods
+
+    clearCanvas(ctx, canvas) {
+        ctx.save();
+        ctx.resetTransform();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+    }
+
+    drawAxes(ctx, canvas) {
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 2;
+        
+        // X-axis
+        ctx.beginPath();
+        ctx.moveTo(-canvas.width/2, 0);
+        ctx.lineTo(canvas.width/2, 0);
+        ctx.stroke();
+        
+        // Y-axis
+        ctx.beginPath();
+        ctx.moveTo(0, -canvas.height/2);
+        ctx.lineTo(0, canvas.height/2);
+        ctx.stroke();
+
+        // Grid lines
+        ctx.strokeStyle = '#f0f0f0';
+        ctx.lineWidth = 1;
+        
+        const scale = 40;
+        for (let i = -10; i <= 10; i++) {
+            if (i !== 0) {
+                // Vertical grid lines
+                ctx.beginPath();
+                ctx.moveTo(i * scale, -canvas.height/2);
+                ctx.lineTo(i * scale, canvas.height/2);
+                ctx.stroke();
+                
+                // Horizontal grid lines
+                ctx.beginPath();
+                ctx.moveTo(-canvas.width/2, i * scale);
+                ctx.lineTo(canvas.width/2, i * scale);
+                ctx.stroke();
+            }
+        }
+    }
+
+    drawFunction(ctx, canvas, functionType) {
+        const scale = 40;
+        const startX = -canvas.width / (2 * scale);
+        const endX = canvas.width / (2 * scale);
+        
+        ctx.strokeStyle = '#667eea';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        let first = true;
+        
+        for (let x = startX; x <= endX; x += 0.1) {
+            let y;
+            
+            try {
+                switch(functionType) {
+                    case 'linear':
+                        y = x; // Simple line y = x
+                        break;
+                    case 'quadratic':
+                        y = x * x; // y = x²
+                        break;
+                    case 'rational':
+                        if (Math.abs(x) < 0.1) continue; // Skip near zero
+                        y = 1 / x;
+                        if (Math.abs(y) > 10) continue; // Skip very large values
+                        break;
+                    case 'radical':
+                        if (x < 0) continue; // Skip negative values
+                        y = Math.sqrt(x);
+                        break;
+                    case 'exponential':
+                        y = Math.pow(2, x);
+                        if (y > 10 || y < -10) continue; // Skip very large values
+                        break;
+                    case 'logarithmic':
+                        if (x <= 0) continue; // Skip non-positive values
+                        y = Math.log10(x);
+                        break;
+                    default:
+                        y = x;
+                }
+                
+                const canvasX = x * scale;
+                const canvasY = y * scale;
+                
+                if (first) {
+                    ctx.moveTo(canvasX, canvasY);
+                    first = false;
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            } catch (e) {
+                first = true; // Reset on error
+            }
+        }
+        
+        ctx.stroke();
+    }
+
+    // Utility Methods
+
+    evaluateFunction(expression, x) {
+        try {
+            // Replace mathematical notation with JavaScript equivalents
+            let expr = expression
+                .replace(/\^/g, '**')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/log\(/g, 'Math.log10(')
+                .replace(/ln\(/g, 'Math.log(')
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/abs\(/g, 'Math.abs(')
+                .replace(/x/g, `(${x})`);
+            
+            return eval(expr);
+        } catch (e) {
+            return NaN;
+        }
+    }
+}
+
+// Global Functions for HTML Event Handlers
+
+function switchUnit(unitId) {
+    // Update unit navigation
+    document.querySelectorAll('.unit-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    event.target.closest('.unit-card').classList.add('active');
+    
+    // Update unit content
+    document.querySelectorAll('.unit-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(unitId).classList.add('active');
+    
+    algebra2App.currentUnit = unitId;
+}
+
+function switchTopic(topicId) {
+    // Update topic tabs within current unit
+    const currentUnit = document.querySelector('.unit-content.active');
+    if (currentUnit) {
+        // Update topic buttons
+        currentUnit.querySelectorAll('.topic-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        // Update topic content
+        currentUnit.querySelectorAll('.topic-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        const topicContent = document.getElementById(topicId);
+        if (topicContent) {
+            topicContent.classList.add('active');
+        }
+    }
+    
+    algebra2App.currentTopic = topicId;
+    
+    // Initialize the topic if it has special requirements
+    switch(topicId) {
+        case 'domain-range':
+            algebra2App.updateDomainRange();
+            break;
+    }
+}
+
+function updateDomainRange() {
+    algebra2App.updateDomainRange();
+}
+
+function analyzeDomainRange() {
+    algebra2App.analyzeDomainRange();
+}
+
+function showIntervalNotation() {
+    algebra2App.showIntervalNotation();
+}
+
+function updateCharacteristics() {
+    // Placeholder for function characteristics analysis
+    console.log('Updating function characteristics...');
+}
+
+function findIncreasingDecreasing() {
+    // Placeholder for increasing/decreasing intervals
+    console.log('Finding increasing/decreasing intervals...');
+}
+
+function findPositiveNegative() {
+    // Placeholder for positive/negative regions
+    console.log('Finding positive/negative regions...');
+}
+
+function findExtrema() {
+    // Placeholder for extrema analysis
+    console.log('Finding extrema...');
+}
+
+function updateTransformations() {
+    // Placeholder for transformation visualization
+    console.log('Updating transformations...');
+}
+
+function updateComplex() {
+    // Placeholder for complex number operations
+    console.log('Updating complex number operations...');
+}
+
+function performComplexOperation() {
+    // Placeholder for complex number calculations
+    console.log('Performing complex operation...');
+}
+
+function updateQuadratic() {
+    // Placeholder for quadratic analysis
+    console.log('Updating quadratic function...');
+}
+
+function solveQuadratic() {
+    // Placeholder for quadratic formula solution
+    console.log('Solving quadratic equation...');
+}
+
+function completeSquare() {
+    // Placeholder for completing the square
+    console.log('Completing the square...');
+}
+
+function updateSystems() {
+    // Placeholder for system of equations
+    console.log('Updating system of equations...');
+}
+
+function solveSystem() {
+    // Placeholder for solving systems
+    console.log('Solving system of equations...');
+}
+
+function analyzePolynomial() {
+    // Placeholder for polynomial analysis
+    console.log('Analyzing polynomial...');
+}
+
+function updatePolynomial() {
+    // Placeholder for polynomial updates
+    console.log('Updating polynomial...');
+}
+
+// Initialize the application when the page loads
+let algebra2App;
+document.addEventListener('DOMContentLoaded', () => {
+    algebra2App = new Algebra2Application();
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (algebra2App) {
+        algebra2App.initializeCanvases();
+        // Redraw current visualization
+        if (algebra2App.currentTopic === 'domain-range') {
+            algebra2App.updateDomainRange();
+        }
+    }
+});
