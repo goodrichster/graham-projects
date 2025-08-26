@@ -80,7 +80,11 @@ A collection of interactive mathematical applications built with modern web tech
 - **End Behavior Analysis**: Mathematical explanation of function behavior at infinity
 - **Interactive Function Input**: Custom rational function entry with real-time analysis
 - **Step-by-step Solutions**: Detailed mathematical explanations for all computations
-- **AP Calculus AB Aligned**: Covers numerical integration and rational function analysis from AP curriculum
+- **Derivative Rules Flashcards**: Interactive study cards for all 16 essential derivative formulas
+- **3D Card Flip Animation**: Smooth card transitions with mathematical typography
+- **Progress Tracking**: Visual progress bar showing cards reviewed with shuffle and reset options
+- **Comprehensive Rule Set**: Covers constant, power, product, quotient, chain, trigonometric, logarithmic, and exponential rules
+- **AP Calculus AB Aligned**: Covers numerical integration, rational function analysis, and derivative memorization from AP curriculum
 
 ## 🛠 Technical Specifications
 
@@ -146,7 +150,7 @@ A collection of interactive mathematical applications built with modern web tech
 - **Trigonometry**: Unit circle, exact values, and function relationships
 - **Solid Geometry**: 3D polyhedra and Euler's formula (V - E + F = 2)
 - **Physics**: Classical mechanics concepts from AP Physics 1 curriculum including circular motion
-- **Calculus**: Numerical integration methods, Riemann sums, rational function analysis, and asymptote computation
+- **Calculus**: Numerical integration methods, Riemann sums, rational function analysis, asymptote computation, and derivative rule memorization
 
 ### Educational Value
 - **Exact Representations**: Teaches symbolic vs. decimal mathematics
@@ -215,10 +219,11 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 - 3D graphing capabilities
 - Statistical analysis tools
 - Advanced trigonometric functions
-- Additional calculus topics (limits, derivatives, series convergence)
+- Additional calculus topics (limits, infinite series, parametric equations)
 - Additional physics simulations (waves, electricity, magnetism)
 - Symbolic algebra and equation solving
 - Probability and statistics modules
+- Chemistry simulation modules
 
 ## 📈 Version History
 

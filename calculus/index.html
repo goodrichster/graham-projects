@@ -256,6 +256,264 @@
                 padding: 15px;
             }
         }
+
+        /* Flashcards Styles */
+        .flashcard-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .flashcard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .flashcard-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .flashcard-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .flashcard-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .nav-button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-counter {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .flashcard-main {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            width: 400px;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-content {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .card-label {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .math-formula {
+            font-size: 2.5rem;
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .flip-hint {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-controls .control-button {
+            min-width: 140px;
+        }
+
+        .progress-tracker {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .all-cards-view {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .all-cards-view h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .mini-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .mini-card-function {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .mini-card-derivative {
+            font-size: 1.2rem;
+            color: #667eea;
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .flashcard {
+                width: 90vw;
+                max-width: 350px;
+                height: 220px;
+            }
+
+            .math-formula {
+                font-size: 2rem;
+            }
+
+            .flashcard-navigation {
+                padding: 0 10px;
+            }
+
+            .nav-button {
+                min-width: 100px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .flashcard-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flashcard-controls .control-button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -276,6 +534,7 @@
             <button class="tab-button" onclick="switchSimulation('function-analysis')">Function Analysis</button>
             <button class="tab-button" onclick="switchSimulation('numerical-integration')">Numerical Integration</button>
             <button class="tab-button" onclick="switchSimulation('rational-functions')">Rational Functions</button>
+            <button class="tab-button" onclick="switchSimulation('flashcards')">Flashcards</button>
         </div>
 
         <!-- Limit Definition of Derivative -->
@@ -656,6 +915,60 @@
                         </div>
                         <div id="rationalResults"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcards -->
+        <div id="flashcards" class="simulation-content">
+            <div class="flashcard-container">
+                <div class="flashcard-header">
+                    <h2>Derivative Rules Flashcards</h2>
+                    <p>Practice essential derivative formulas for AP Calculus AB</p>
+                </div>
+                
+                <div class="flashcard-navigation">
+                    <button class="nav-button" onclick="previousCard()" id="prevBtn">← Previous</button>
+                    <span class="card-counter" id="cardCounter">1 / 16</span>
+                    <button class="nav-button" onclick="nextCard()" id="nextBtn">Next →</button>
+                </div>
+                
+                <div class="flashcard-main">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <div class="card-content">
+                                <div class="card-label">Function</div>
+                                <div class="math-formula" id="frontFormula">d(cu)/dx</div>
+                                <div class="flip-hint">Click to see derivative →</div>
+                            </div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="card-content">
+                                <div class="card-label">Derivative</div>
+                                <div class="math-formula" id="backFormula">cu'</div>
+                                <div class="flip-hint">← Click to see function</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flashcard-controls">
+                    <button class="control-button" onclick="shuffleCards()">Shuffle Cards</button>
+                    <button class="control-button" onclick="resetProgress()">Reset Progress</button>
+                    <button class="control-button" onclick="showAllCards()">View All Cards</button>
+                </div>
+                
+                <div class="progress-tracker">
+                    <div class="progress-label">Progress:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0 / 16 cards reviewed</div>
+                </div>
+                
+                <div class="all-cards-view" id="allCardsView" style="display: none;">
+                    <h3>All Derivative Rules</h3>
+                    <div class="cards-grid" id="cardsGrid"></div>
                 </div>
             </div>
         </div>

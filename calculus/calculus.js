@@ -9,6 +9,9 @@ class CalculusSimulations {
         this.animationFrames = {};
         this.integrationScale = null;
         
+        // Flashcard system
+        this.initializeFlashcards();
+        
         // Wait for DOM to be fully loaded before initializing canvases
         setTimeout(() => {
             this.initializeCanvases();
@@ -207,6 +210,9 @@ class CalculusSimulations {
                 document.getElementById('xRange').value = '10';
                 this.switchCanvas('rationalCanvas');
                 this.updateRationalFunction();
+                break;
+            case 'flashcards':
+                this.initializeFlashcardUI();
                 break;
         }
     }
@@ -2495,6 +2501,233 @@ class CalculusSimulations {
             }
         }
     }
+
+    // Flashcard System Implementation
+    initializeFlashcards() {
+        // Derivative rules flashcards based on the provided image
+        this.flashcards = [
+            {
+                id: 1,
+                function: "d(cu)/dx",
+                derivative: "cu'",
+                description: "Constant Multiple Rule"
+            },
+            {
+                id: 2,
+                function: "d(u ± v)/dx",
+                derivative: "u' ± v'",
+                description: "Sum/Difference Rule"
+            },
+            {
+                id: 3,
+                function: "d(uv)/dx",
+                derivative: "u'v + uv'",
+                description: "Product Rule"
+            },
+            {
+                id: 4,
+                function: "d(u/v)/dx",
+                derivative: "(u'v - uv')/v²",
+                description: "Quotient Rule"
+            },
+            {
+                id: 5,
+                function: "d(c)/dx",
+                derivative: "0",
+                description: "Constant Rule"
+            },
+            {
+                id: 6,
+                function: "d(uⁿ)/dx",
+                derivative: "nuⁿ⁻¹u'",
+                description: "Power Rule"
+            },
+            {
+                id: 7,
+                function: "d(x)/dx",
+                derivative: "1",
+                description: "Variable Rule"
+            },
+            {
+                id: 8,
+                function: "d(|u|)/dx",
+                derivative: "u/|u| · u'",
+                description: "Absolute Value Rule"
+            },
+            {
+                id: 9,
+                function: "d(sin u)/dx",
+                derivative: "(cos u)u'",
+                description: "Sine Rule"
+            },
+            {
+                id: 10,
+                function: "d(cos u)/dx",
+                derivative: "(-sin u)u'",
+                description: "Cosine Rule"
+            },
+            {
+                id: 11,
+                function: "d(tan u)/dx",
+                derivative: "(sec² u)u'",
+                description: "Tangent Rule"
+            },
+            {
+                id: 12,
+                function: "d(cot u)/dx",
+                derivative: "(-csc² u)u'",
+                description: "Cotangent Rule"
+            },
+            {
+                id: 13,
+                function: "d(sec u)/dx",
+                derivative: "(sec u tan u)u'",
+                description: "Secant Rule"
+            },
+            {
+                id: 14,
+                function: "d(csc u)/dx",
+                derivative: "(-csc u cot u)u'",
+                description: "Cosecant Rule"
+            },
+            {
+                id: 15,
+                function: "d(ln u)/dx",
+                derivative: "u'/u",
+                description: "Natural Logarithm Rule"
+            },
+            {
+                id: 16,
+                function: "d(eᵘ)/dx",
+                derivative: "eᵘu'",
+                description: "Exponential Rule"
+            }
+        ];
+        
+        this.currentCardIndex = 0;
+        this.isFlipped = false;
+        this.reviewedCards = new Set();
+        this.cardOrder = [...Array(this.flashcards.length).keys()]; // [0, 1, 2, ..., 15]
+    }
+
+    initializeFlashcardUI() {
+        this.updateCardDisplay();
+        this.updateProgress();
+        this.updateNavigationButtons();
+    }
+
+    updateCardDisplay() {
+        const card = this.flashcards[this.cardOrder[this.currentCardIndex]];
+        const flashcard = document.getElementById('flashcard');
+        const frontFormula = document.getElementById('frontFormula');
+        const backFormula = document.getElementById('backFormula');
+        const cardCounter = document.getElementById('cardCounter');
+        
+        if (frontFormula) frontFormula.textContent = card.function;
+        if (backFormula) backFormula.textContent = card.derivative;
+        if (cardCounter) cardCounter.textContent = `${this.currentCardIndex + 1} / ${this.flashcards.length}`;
+        
+        // Reset flip state when changing cards
+        if (flashcard) {
+            flashcard.classList.remove('flipped');
+            this.isFlipped = false;
+        }
+    }
+
+    updateProgress() {
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        const percentage = (this.reviewedCards.size / this.flashcards.length) * 100;
+        
+        if (progressFill) progressFill.style.width = `${percentage}%`;
+        if (progressText) progressText.textContent = `${this.reviewedCards.size} / ${this.flashcards.length} cards reviewed`;
+    }
+
+    updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        if (prevBtn) prevBtn.disabled = this.currentCardIndex === 0;
+        if (nextBtn) nextBtn.disabled = this.currentCardIndex === this.flashcards.length - 1;
+    }
+
+    previousCard() {
+        if (this.currentCardIndex > 0) {
+            this.currentCardIndex--;
+            this.updateCardDisplay();
+            this.updateNavigationButtons();
+        }
+    }
+
+    nextCard() {
+        if (this.currentCardIndex < this.flashcards.length - 1) {
+            this.currentCardIndex++;
+            this.updateCardDisplay();
+            this.updateNavigationButtons();
+        }
+    }
+
+    flipCard() {
+        const flashcard = document.getElementById('flashcard');
+        if (flashcard) {
+            flashcard.classList.toggle('flipped');
+            this.isFlipped = !this.isFlipped;
+            
+            // Mark card as reviewed when flipped to see the answer
+            if (this.isFlipped) {
+                this.reviewedCards.add(this.cardOrder[this.currentCardIndex]);
+                this.updateProgress();
+            }
+        }
+    }
+
+    shuffleCards() {
+        // Fisher-Yates shuffle algorithm
+        for (let i = this.cardOrder.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.cardOrder[i], this.cardOrder[j]] = [this.cardOrder[j], this.cardOrder[i]];
+        }
+        
+        this.currentCardIndex = 0;
+        this.updateCardDisplay();
+        this.updateNavigationButtons();
+    }
+
+    resetProgress() {
+        this.reviewedCards.clear();
+        this.currentCardIndex = 0;
+        this.cardOrder = [...Array(this.flashcards.length).keys()];
+        this.updateCardDisplay();
+        this.updateProgress();
+        this.updateNavigationButtons();
+    }
+
+    showAllCards() {
+        const allCardsView = document.getElementById('allCardsView');
+        const cardsGrid = document.getElementById('cardsGrid');
+        
+        if (allCardsView && cardsGrid) {
+            const isVisible = allCardsView.style.display !== 'none';
+            
+            if (isVisible) {
+                allCardsView.style.display = 'none';
+                return;
+            }
+            
+            // Generate all cards HTML
+            cardsGrid.innerHTML = this.flashcards.map(card => `
+                <div class="mini-card">
+                    <div class="mini-card-function">${card.function}</div>
+                    <div style="text-align: center; margin: 8px 0; font-weight: bold; color: #666;">↓</div>
+                    <div class="mini-card-derivative">${card.derivative}</div>
+                </div>
+            `).join('');
+            
+            allCardsView.style.display = 'block';
+        }
+    }
+
 }
 
 // Global Functions for HTML event handlers
@@ -2610,6 +2843,31 @@ function findAsymptotesAndHoles() {
 
 function findRationalExtrema() {
     calculusApp.findRationalExtrema();
+}
+
+// Flashcard Functions
+function previousCard() {
+    calculusApp.previousCard();
+}
+
+function nextCard() {
+    calculusApp.nextCard();
+}
+
+function flipCard() {
+    calculusApp.flipCard();
+}
+
+function shuffleCards() {
+    calculusApp.shuffleCards();
+}
+
+function resetProgress() {
+    calculusApp.resetProgress();
+}
+
+function showAllCards() {
+    calculusApp.showAllCards();
 }
 
 // Initialize the application when the page loads
