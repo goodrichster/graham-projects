@@ -556,9 +556,12 @@
                     <div class="control-group">
                         <label class="control-label">Integration Method:</label>
                         <select id="integrationMethod" class="control-input" onchange="updateNumericalIntegration()">
+                            <option value="left">Left Riemann Sum</option>
+                            <option value="right">Right Riemann Sum</option>
                             <option value="midpoint">Midpoint Rule</option>
                             <option value="trapezoidal">Trapezoidal Rule</option>
-                            <option value="both">Compare Both</option>
+                            <option value="compare-riemann">Compare Left/Right</option>
+                            <option value="compare-all">Compare All Methods</option>
                         </select>
                     </div>
                     <div class="control-group">
@@ -602,6 +605,8 @@
                     <div class="info-panel">
                         <h4>Numerical Integration:</h4>
                         <div class="formula-display">
+                            Left Riemann: ∑ f(xᵢ)Δx<br>
+                            Right Riemann: ∑ f(xᵢ₊₁)Δx<br>
                             Midpoint: ∑ f(mᵢ)Δx<br>
                             Trapezoidal: ∑ ½[f(xᵢ)+f(xᵢ₊₁)]Δx
                         </div>

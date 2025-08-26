@@ -194,7 +194,7 @@ class CalculusSimulations {
                 this.updateFunctionAnalysis();
                 break;
             case 'numerical-integration':
-                document.getElementById('integrationMethod').value = 'midpoint';
+                document.getElementById('integrationMethod').value = 'left';
                 document.getElementById('dataInputMethod').value = 'table';
                 document.getElementById('numSubintervals').value = '5';
                 this.switchCanvas('integrationCanvas');
@@ -1433,15 +1433,29 @@ class CalculusSimulations {
         const minY = Math.min(...points.map(p => p.y));
         const maxY = Math.max(...points.map(p => p.y));
         
+        // Extend y-axis to ensure visibility up to 150
+        const extendedMaxY = Math.max(maxY, 150);
+        
+        // Add generous padding to ensure all points are visible with good margins
         const xRange = maxX - minX;
-        const yRange = maxY - minY;
+        const yRange = extendedMaxY - minY;
+        const xPadding = xRange * 0.08; // 8% padding on each side
+        const yPadding = yRange * 0.12; // 12% padding on top and bottom for extended range
         
-        // Use most of the canvas for the graph
-        const plotWidth = canvas.width * 0.8;
-        const plotHeight = canvas.height * 0.7;
+        const paddedMinX = minX - xPadding;
+        const paddedMaxX = maxX + xPadding;
+        const paddedMinY = minY - yPadding;
+        const paddedMaxY = extendedMaxY + yPadding;
         
-        const xScale = plotWidth / xRange;
-        const yScale = plotHeight / yRange;
+        const paddedXRange = paddedMaxX - paddedMinX;
+        const paddedYRange = paddedMaxY - paddedMinY;
+        
+        // Use conservative canvas area to ensure everything fits with good margins
+        const plotWidth = canvas.width * 0.72;   // Slightly increased for better visibility
+        const plotHeight = canvas.height * 0.62; // Slightly increased for better visibility
+        
+        const xScale = plotWidth / paddedXRange;
+        const yScale = plotHeight / paddedYRange;
         
         // Draw the curve connecting points
         ctx.strokeStyle = '#2196F3';
@@ -1449,8 +1463,8 @@ class CalculusSimulations {
         ctx.beginPath();
         
         for (let i = 0; i < points.length; i++) {
-            const x = (points[i].x - minX) * xScale - plotWidth/2;
-            const y = (points[i].y - minY) * yScale;
+            const x = (points[i].x - paddedMinX) * xScale - plotWidth/2;
+            const y = (points[i].y - paddedMinY) * yScale;
             
             if (i === 0) {
                 ctx.moveTo(x, y);
@@ -1460,30 +1474,44 @@ class CalculusSimulations {
         }
         ctx.stroke();
         
-        // Draw data points
+        // Draw data points with larger radius for better visibility
         ctx.fillStyle = '#F44336';
         points.forEach(point => {
-            const x = (point.x - minX) * xScale - plotWidth/2;
-            const y = (point.y - minY) * yScale;
+            const x = (point.x - paddedMinX) * xScale - plotWidth/2;
+            const y = (point.y - paddedMinY) * yScale;
             
             ctx.beginPath();
-            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
             ctx.fill();
         });
         
         // Store scaling info for use in visualization
-        this.integrationScale = { xScale, yScale, minX, minY, plotWidth, plotHeight };
+        this.integrationScale = { 
+            xScale, 
+            yScale, 
+            minX: paddedMinX, 
+            minY: paddedMinY, 
+            plotWidth, 
+            plotHeight,
+            dataMinX: minX,
+            dataMaxX: maxX,
+            dataMinY: minY,
+            dataMaxY: maxY,
+            extendedMaxY,
+            paddedMinY,
+            paddedMaxY
+        };
+        
+        // Debug logging to verify the scaling includes extended y range
+        console.log('Data Y-range:', { minY, maxY, extendedMaxY });
+        console.log('Padded Y-range:', { paddedMinY, paddedMaxY });
+        console.log('Plot dimensions:', { plotWidth, plotHeight });
     }
     
     drawIntegrationAxes(ctx, canvas) {
         if (!this.integrationScale) return;
         
-        const { xScale, yScale, minX, minY, plotWidth, plotHeight } = this.integrationScale;
-        const points = this.parseDataTable(document.getElementById('dataTable').value);
-        if (points.length === 0) return;
-        
-        const maxX = Math.max(...points.map(p => p.x));
-        const maxY = Math.max(...points.map(p => p.y));
+        const { xScale, yScale, minX, minY, plotWidth, plotHeight, dataMinX, dataMaxX, dataMinY, dataMaxY, extendedMaxY, paddedMinY, paddedMaxY } = this.integrationScale;
         
         ctx.save();
         ctx.scale(1, -1); // Flip text back to normal
@@ -1491,20 +1519,86 @@ class CalculusSimulations {
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
         
-        // X-axis labels (every 200 units)
-        for (let x = minX; x <= maxX; x += 200) {
-            const canvasX = (x - minX) * xScale - plotWidth/2;
-            ctx.fillText(x.toString(), canvasX, 15);
-        }
+        // Calculate appropriate label intervals based on data range
+        const xDataRange = dataMaxX - dataMinX;
+        const yDataRange = extendedMaxY - dataMinY;
         
-        // Y-axis labels
-        ctx.textAlign = 'right';
-        for (let y = Math.ceil(minY/20)*20; y <= maxY; y += 20) {
-            const canvasY = -((y - minY) * yScale);
-            if (y !== 0) {
-                ctx.fillText(y.toString(), -plotWidth/2 - 10, canvasY + 4);
+        // Determine x-axis label interval (aim for 5-8 labels)
+        let xInterval = Math.pow(10, Math.floor(Math.log10(xDataRange / 6)));
+        if (xDataRange / xInterval > 8) xInterval *= 2;
+        if (xDataRange / xInterval > 8) xInterval *= 2.5;
+        
+        // For y-axis, use 25-unit intervals for better readability with extended range to 150
+        let yInterval = 25; // Use 25-unit intervals for the 10-150 range
+        
+        // X-axis labels
+        const xStart = Math.ceil(dataMinX / xInterval) * xInterval;
+        for (let x = xStart; x <= dataMaxX; x += xInterval) {
+            const canvasX = (x - minX) * xScale - plotWidth/2;
+            if (canvasX >= -plotWidth/2 && canvasX <= plotWidth/2) {
+                ctx.fillText(x.toString(), canvasX, 15);
             }
         }
+        
+        // Y-axis labels - ensure we include extended range up to 150
+        ctx.textAlign = 'right';
+        
+        // Create a comprehensive set of y-labels
+        const yLabels = [];
+        
+        // Add labels at regular intervals from data minimum to extended maximum
+        for (let y = Math.ceil(dataMinY / yInterval) * yInterval; y <= extendedMaxY; y += yInterval) {
+            yLabels.push(y);
+        }
+        
+        // Ensure key values are explicitly included
+        if (!yLabels.includes(dataMaxY)) {
+            yLabels.push(dataMaxY);
+        }
+        if (!yLabels.includes(150)) {
+            yLabels.push(150);
+        }
+        
+        // Sort labels for proper display
+        yLabels.sort((a, b) => a - b);
+        
+        // Draw all y-labels
+        yLabels.forEach(y => {
+            const canvasY = -((y - minY) * yScale);
+            if (canvasY >= -plotHeight && canvasY <= 0) {
+                ctx.fillText(y.toString(), -plotWidth/2 - 10, canvasY + 4);
+                
+                // Draw grid lines for major values
+                ctx.save();
+                ctx.strokeStyle = y % 50 === 0 ? '#e0e0e0' : '#f0f0f0'; // Stronger lines every 50 units
+                ctx.lineWidth = y % 50 === 0 ? 1 : 0.5;
+                ctx.scale(1, -1); // Flip back for grid lines
+                ctx.beginPath();
+                ctx.moveTo(-plotWidth/2, (y - minY) * yScale);
+                ctx.lineTo(plotWidth/2, (y - minY) * yScale);
+                ctx.stroke();
+                ctx.restore();
+            }
+        });
+        
+        // Draw axis lines
+        ctx.strokeStyle = '#999';
+        ctx.lineWidth = 2;
+        ctx.scale(1, -1); // Flip back to canvas coordinates
+        
+        // X-axis line (at y = dataMinY level)
+        const xAxisY = (dataMinY - minY) * yScale;
+        ctx.beginPath();
+        ctx.moveTo(-plotWidth/2, xAxisY);
+        ctx.lineTo(plotWidth/2, xAxisY);
+        ctx.stroke();
+        
+        // Y-axis line (at x = dataMinX level)
+        const yAxisX = (dataMinX - minX) * xScale - plotWidth/2;
+        ctx.beginPath();
+        ctx.moveTo(yAxisX, 0);
+        ctx.lineTo(yAxisX, plotHeight);
+        ctx.stroke();
         
         ctx.restore();
     }
@@ -1533,18 +1627,24 @@ class CalculusSimulations {
         
         if (points.length < 2 || n < 1 || !this.integrationScale) return;
         
-        const { xScale, yScale, minX, minY, plotWidth, plotHeight } = this.integrationScale;
-        const xRange = points[points.length - 1].x - points[0].x;
+        const { xScale, yScale, minX, minY, plotWidth, plotHeight, dataMinX, dataMaxX } = this.integrationScale;
+        const xRange = dataMaxX - dataMinX;
         const deltaX = xRange / n;
         
-        // Draw rectangles or trapezoids
-        ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
-        ctx.strokeStyle = '#4CAF50';
-        ctx.lineWidth = 1;
+        // Calculate baseline y position (bottom of the data area)
+        const baselineY = (this.integrationScale.dataMinY - minY) * yScale;
+        
+        console.log('Visualization debug:', { 
+            method, 
+            baselineY, 
+            dataMinY: this.integrationScale.dataMinY, 
+            minY, 
+            yScale 
+        });
         
         for (let i = 0; i < n; i++) {
-            const x1 = points[0].x + i * deltaX;
-            const x2 = points[0].x + (i + 1) * deltaX;
+            const x1 = dataMinX + i * deltaX;
+            const x2 = dataMinX + (i + 1) * deltaX;
             
             const y1 = this.interpolateValue(points, x1);
             const y2 = this.interpolateValue(points, x2);
@@ -1554,29 +1654,73 @@ class CalculusSimulations {
             const canvasY1 = (y1 - minY) * yScale;
             const canvasY2 = (y2 - minY) * yScale;
             
-            if (method === 'midpoint' || method === 'both') {
-                const midX = (x1 + x2) / 2;
-                const midY = this.interpolateValue(points, midX);
-                const canvasMidX = (midX - minX) * xScale - plotWidth/2;
-                const canvasMidY = (midY - minY) * yScale;
-                
-                // Draw rectangle
-                ctx.fillStyle = method === 'both' ? 'rgba(76, 175, 80, 0.2)' : 'rgba(76, 175, 80, 0.3)';
-                ctx.strokeStyle = '#4CAF50';
-                ctx.fillRect(canvasX1, 0, canvasX2 - canvasX1, canvasMidY);
-                ctx.strokeRect(canvasX1, 0, canvasX2 - canvasX1, canvasMidY);
+            const rectWidth = canvasX2 - canvasX1;
+            
+            if (i === 0) {
+                console.log('First rectangle coords:', {
+                    canvasX1, canvasX2, canvasY1, canvasY2, baselineY, rectWidth
+                });
             }
             
-            if (method === 'trapezoidal' || method === 'both') {
-                // Draw trapezoid
-                ctx.fillStyle = method === 'both' ? 'rgba(244, 67, 54, 0.2)' : 'rgba(76, 175, 80, 0.3)';
-                ctx.strokeStyle = method === 'both' ? '#F44336' : '#4CAF50';
+            // Left Riemann Sum
+            if (method === 'left' || method === 'compare-riemann' || method === 'compare-all') {
+                ctx.fillStyle = method === 'compare-riemann' || method === 'compare-all' ? 'rgba(255, 152, 0, 0.4)' : 'rgba(255, 152, 0, 0.6)';
+                ctx.strokeStyle = '#FF9800';
+                ctx.lineWidth = 2;
+                
+                // Draw rectangle from baseline to function value at left endpoint
+                const rectHeight = canvasY1 - baselineY;
+                
+                if (Math.abs(rectHeight) > 1 && Math.abs(rectWidth) > 1) {
+                    ctx.fillRect(canvasX1, baselineY, rectWidth, rectHeight);
+                    ctx.strokeRect(canvasX1, baselineY, rectWidth, rectHeight);
+                }
+            }
+            
+            // Right Riemann Sum
+            if (method === 'right' || method === 'compare-riemann' || method === 'compare-all') {
+                ctx.fillStyle = method === 'compare-riemann' || method === 'compare-all' ? 'rgba(156, 39, 176, 0.4)' : 'rgba(156, 39, 176, 0.6)';
+                ctx.strokeStyle = '#9C27B0';
+                ctx.lineWidth = 2;
+                
+                // Draw rectangle from baseline to function value at right endpoint
+                const rectHeight = canvasY2 - baselineY;
+                
+                if (Math.abs(rectHeight) > 1 && Math.abs(rectWidth) > 1) {
+                    ctx.fillRect(canvasX1, baselineY, rectWidth, rectHeight);
+                    ctx.strokeRect(canvasX1, baselineY, rectWidth, rectHeight);
+                }
+            }
+            
+            // Midpoint Rule
+            if (method === 'midpoint' || method === 'compare-all') {
+                const midX = (x1 + x2) / 2;
+                const midY = this.interpolateValue(points, midX);
+                const canvasMidY = (midY - minY) * yScale;
+                
+                ctx.fillStyle = method === 'compare-all' ? 'rgba(76, 175, 80, 0.3)' : 'rgba(76, 175, 80, 0.6)';
+                ctx.strokeStyle = '#4CAF50';
+                ctx.lineWidth = 2;
+                
+                const rectHeight = canvasMidY - baselineY;
+                
+                if (Math.abs(rectHeight) > 1 && Math.abs(rectWidth) > 1) {
+                    ctx.fillRect(canvasX1, baselineY, rectWidth, rectHeight);
+                    ctx.strokeRect(canvasX1, baselineY, rectWidth, rectHeight);
+                }
+            }
+            
+            // Trapezoidal Rule
+            if (method === 'trapezoidal' || method === 'compare-all') {
+                ctx.fillStyle = method === 'compare-all' ? 'rgba(244, 67, 54, 0.3)' : 'rgba(244, 67, 54, 0.6)';
+                ctx.strokeStyle = '#F44336';
+                ctx.lineWidth = 2;
                 
                 ctx.beginPath();
-                ctx.moveTo(canvasX1, 0);
+                ctx.moveTo(canvasX1, baselineY);
                 ctx.lineTo(canvasX1, canvasY1);
                 ctx.lineTo(canvasX2, canvasY2);
-                ctx.lineTo(canvasX2, 0);
+                ctx.lineTo(canvasX2, baselineY);
                 ctx.closePath();
                 ctx.fill();
                 ctx.stroke();
@@ -1615,13 +1759,21 @@ class CalculusSimulations {
         const xRange = points[points.length - 1].x - points[0].x;
         const deltaX = xRange / n;
         
+        let leftSum = 0;
+        let rightSum = 0;
         let midpointSum = 0;
         let trapezoidalSum = 0;
         
-        // Calculate both methods
+        // Calculate all methods
         for (let i = 0; i < n; i++) {
             const x1 = points[0].x + i * deltaX;
             const x2 = points[0].x + (i + 1) * deltaX;
+            
+            // Left and Right Riemann sums
+            const y1 = this.interpolateValue(points, x1);
+            const y2 = this.interpolateValue(points, x2);
+            leftSum += y1 * deltaX;
+            rightSum += y2 * deltaX;
             
             // Midpoint rule
             const midX = (x1 + x2) / 2;
@@ -1629,40 +1781,78 @@ class CalculusSimulations {
             midpointSum += midY * deltaX;
             
             // Trapezoidal rule
-            const y1 = this.interpolateValue(points, x1);
-            const y2 = this.interpolateValue(points, x2);
             trapezoidalSum += 0.5 * (y1 + y2) * deltaX;
         }
         
         let results = '';
         
-        if (method === 'midpoint' || method === 'both') {
+        if (method === 'left') {
+            results += `
+                <div class="step-display">
+                    <strong>Left Riemann Sum (n = ${n}):</strong><br>
+                    Δx = (${points[points.length-1].x} - ${points[0].x})/${n} = ${deltaX.toFixed(1)}<br>
+                    Area ≈ Σ f(x₍ᵢ₎)Δx = ${leftSum.toFixed(2)}<br>
+                    <em>Uses left endpoint of each subinterval</em>
+                </div>
+            `;
+        }
+        
+        if (method === 'right') {
+            results += `
+                <div class="step-display">
+                    <strong>Right Riemann Sum (n = ${n}):</strong><br>
+                    Δx = (${points[points.length-1].x} - ${points[0].x})/${n} = ${deltaX.toFixed(1)}<br>
+                    Area ≈ Σ f(x₍ᵢ₊₁₎)Δx = ${rightSum.toFixed(2)}<br>
+                    <em>Uses right endpoint of each subinterval</em>
+                </div>
+            `;
+        }
+        
+        if (method === 'midpoint') {
             results += `
                 <div class="step-display">
                     <strong>Midpoint Rule (n = ${n}):</strong><br>
                     Δx = (${points[points.length-1].x} - ${points[0].x})/${n} = ${deltaX.toFixed(1)}<br>
-                    Area ≈ Σ f(m₍ᵢ₎)Δx = ${midpointSum.toFixed(2)}
+                    Area ≈ Σ f(m₍ᵢ₎)Δx = ${midpointSum.toFixed(2)}<br>
+                    <em>Uses midpoint of each subinterval</em>
                 </div>
             `;
         }
         
-        if (method === 'trapezoidal' || method === 'both') {
+        if (method === 'trapezoidal') {
             results += `
                 <div class="step-display">
                     <strong>Trapezoidal Rule (n = ${n}):</strong><br>
                     Δx = (${points[points.length-1].x} - ${points[0].x})/${n} = ${deltaX.toFixed(1)}<br>
-                    Area ≈ Σ ½[f(xᵢ)+f(xᵢ₊₁)]Δx = ${trapezoidalSum.toFixed(2)}
+                    Area ≈ Σ ½[f(x₍ᵢ₎)+f(x₍ᵢ₊₁₎)]Δx = ${trapezoidalSum.toFixed(2)}<br>
+                    <em>Uses trapezoids connecting endpoints</em>
                 </div>
             `;
         }
         
-        if (method === 'both') {
-            const difference = Math.abs(midpointSum - trapezoidalSum);
+        if (method === 'compare-riemann') {
+            const difference = Math.abs(leftSum - rightSum);
             results += `
                 <div class="step-display">
-                    <strong>Comparison:</strong><br>
-                    Difference = |${midpointSum.toFixed(2)} - ${trapezoidalSum.toFixed(2)}| = ${difference.toFixed(2)}<br>
-                    The ${midpointSum > trapezoidalSum ? 'midpoint' : 'trapezoidal'} rule gives the larger estimate.
+                    <strong>Left Riemann Sum:</strong> ${leftSum.toFixed(2)}<br>
+                    <strong>Right Riemann Sum:</strong> ${rightSum.toFixed(2)}<br>
+                    <strong>Difference:</strong> |${leftSum.toFixed(2)} - ${rightSum.toFixed(2)}| = ${difference.toFixed(2)}<br>
+                    <em>Orange = Left endpoints, Purple = Right endpoints</em>
+                </div>
+            `;
+        }
+        
+        if (method === 'compare-all') {
+            const avgRiemann = (leftSum + rightSum) / 2;
+            results += `
+                <div class="step-display">
+                    <strong>All Methods Comparison (n = ${n}):</strong><br>
+                    • <span style="color: #FF9800;">Left Riemann:</span> ${leftSum.toFixed(2)}<br>
+                    • <span style="color: #9C27B0;">Right Riemann:</span> ${rightSum.toFixed(2)}<br>
+                    • <span style="color: #4CAF50;">Midpoint Rule:</span> ${midpointSum.toFixed(2)}<br>
+                    • <span style="color: #F44336;">Trapezoidal:</span> ${trapezoidalSum.toFixed(2)}<br>
+                    <strong>Average of Riemann Sums:</strong> ${avgRiemann.toFixed(2)}<br>
+                    <em>Note: Trapezoidal = Average of Left and Right Riemann</em>
                 </div>
             `;
         }
@@ -1809,10 +1999,201 @@ class CalculusSimulations {
         return roots;
     }
     
+    getPolynomialDegree(polyStr) {
+        // Extract the highest power of x in the polynomial
+        const matches = polyStr.match(/x\^(\d+)/g);
+        if (!matches) {
+            // Check if polynomial contains x without explicit power
+            if (polyStr.includes('x')) {
+                return 1;
+            }
+            return 0; // Constant polynomial
+        }
+        
+        let maxDegree = 0;
+        matches.forEach(match => {
+            const degree = parseInt(match.replace('x^', ''));
+            if (degree > maxDegree) {
+                maxDegree = degree;
+            }
+        });
+        
+        return maxDegree;
+    }
+    
+    analyzeEndBehaviorAsymptotes(numerator, denominator, numDegree, denDegree) {
+        let analysis = '<br><strong>End Behavior Analysis:</strong><br>';
+        
+        if (numDegree < denDegree) {
+            analysis += '• <span style="color: #2196F3;">Horizontal Asymptote:</span> y = 0<br>';
+            analysis += '  <em>Reason: Degree of numerator < Degree of denominator</em><br>';
+        } else if (numDegree === denDegree) {
+            const numLeading = this.getLeadingCoefficient(numerator, numDegree);
+            const denLeading = this.getLeadingCoefficient(denominator, denDegree);
+            const horizontalAsymptote = numLeading / denLeading;
+            analysis += `• <span style="color: #2196F3;">Horizontal Asymptote:</span> y = ${horizontalAsymptote.toFixed(3)}<br>`;
+            analysis += '  <em>Reason: Degrees are equal, ratio of leading coefficients</em><br>';
+        } else if (numDegree === denDegree + 1) {
+            // Slant asymptote exists
+            const slantAsymptote = this.findSlantAsymptote(numerator, denominator);
+            analysis += `• <span style="color: #9C27B0;">Slant Asymptote:</span> y = ${slantAsymptote.equation}<br>`;
+            analysis += '  <em>Reason: Degree of numerator = Degree of denominator + 1</em><br>';
+            analysis += `  <strong>Polynomial Long Division Process:</strong><br>`;
+            analysis += slantAsymptote.steps;
+        } else {
+            analysis += '• <strong>No Horizontal or Slant Asymptote</strong><br>';
+            analysis += '  <em>Reason: Degree of numerator > Degree of denominator + 1</em><br>';
+            analysis += '  <em>End behavior: Function grows without bound</em><br>';
+        }
+        
+        return analysis;
+    }
+    
+    getLeadingCoefficient(polyStr, degree) {
+        // Extract the coefficient of the highest degree term
+        const pattern = new RegExp(`([+-]?\d*\.?\d*)x\^${degree}`);
+        const match = polyStr.match(pattern);
+        
+        if (match && match[1]) {
+            const coeff = match[1];
+            if (coeff === '' || coeff === '+') return 1;
+            if (coeff === '-') return -1;
+            return parseFloat(coeff);
+        }
+        
+        // If not found with explicit power, check for first degree when degree is 1
+        if (degree === 1) {
+            const pattern1 = /([+-]?\d*\.?\d*)x(?!\^)/;
+            const match1 = polyStr.match(pattern1);
+            if (match1 && match1[1]) {
+                const coeff = match1[1];
+                if (coeff === '' || coeff === '+') return 1;
+                if (coeff === '-') return -1;
+                return parseFloat(coeff);
+            }
+        }
+        
+        return 1; // Default coefficient
+    }
+    
+    findSlantAsymptote(numerator, denominator) {
+        // Perform polynomial long division to find slant asymptote
+        const numCoeffs = this.parsePolynomialCoefficients(numerator);
+        const denCoeffs = this.parsePolynomialCoefficients(denominator);
+        
+        const quotient = this.polynomialLongDivision(numCoeffs, denCoeffs);
+        
+        // Format the slant asymptote equation
+        let equation = '';
+        let steps = '    <em>Division steps:</em><br>';
+        
+        if (quotient.linear !== 0) {
+            if (quotient.linear === 1) {
+                equation = 'x';
+            } else if (quotient.linear === -1) {
+                equation = '-x';
+            } else {
+                equation = `${quotient.linear}x`;
+            }
+        }
+        
+        if (quotient.constant !== 0) {
+            if (equation !== '') {
+                equation += quotient.constant > 0 ? ' + ' : ' - ';
+                equation += Math.abs(quotient.constant);
+            } else {
+                equation = quotient.constant.toString();
+            }
+        }
+        
+        if (equation === '') equation = '0';
+        
+        steps += `    • Quotient: ${equation}<br>`;
+        steps += `    • This quotient represents the slant asymptote<br>`;
+        steps += `    • As x → ±∞, the function approaches this line<br>`;
+        
+        return {
+            equation: equation,
+            steps: steps,
+            slope: quotient.linear,
+            intercept: quotient.constant
+        };
+    }
+    
+    parsePolynomialCoefficients(polyStr) {
+        // Parse polynomial string into coefficient array [constant, x, x^2, x^3, ...]
+        const degree = this.getPolynomialDegree(polyStr);
+        const coeffs = new Array(degree + 1).fill(0);
+        
+        // Handle each possible term
+        for (let i = 0; i <= degree; i++) {
+            if (i === 0) {
+                // Constant term
+                const constantMatch = polyStr.match(/([+-]?\d+)(?!.*x)/);
+                if (constantMatch) {
+                    coeffs[0] = parseFloat(constantMatch[1]);
+                }
+            } else if (i === 1) {
+                // Linear term (x)
+                const linearMatch = polyStr.match(/([+-]?\d*\.?\d*)x(?!\^)/);
+                if (linearMatch) {
+                    const coeff = linearMatch[1];
+                    if (coeff === '' || coeff === '+') coeffs[1] = 1;
+                    else if (coeff === '-') coeffs[1] = -1;
+                    else coeffs[1] = parseFloat(coeff);
+                }
+            } else {
+                // Higher degree terms
+                const pattern = new RegExp(`([+-]?\\d*\\.?\\d*)x\\^${i}`);
+                const match = polyStr.match(pattern);
+                if (match) {
+                    const coeff = match[1];
+                    if (coeff === '' || coeff === '+') coeffs[i] = 1;
+                    else if (coeff === '-') coeffs[i] = -1;
+                    else coeffs[i] = parseFloat(coeff);
+                }
+            }
+        }
+        
+        return coeffs;
+    }
+    
+    polynomialLongDivision(numCoeffs, denCoeffs) {
+        // Simplified polynomial long division for slant asymptote
+        // Returns the linear quotient (ax + b) when numerator degree = denominator degree + 1
+        
+        const numDegree = numCoeffs.length - 1;
+        const denDegree = denCoeffs.length - 1;
+        
+        if (numDegree !== denDegree + 1) {
+            return { linear: 0, constant: 0 };
+        }
+        
+        // Get leading coefficients
+        const numLeading = numCoeffs[numDegree];
+        const denLeading = denCoeffs[denDegree];
+        
+        // First division step: linear coefficient
+        const linearCoeff = numLeading / denLeading;
+        
+        // Second division step: constant coefficient
+        // This is simplified - in practice would need full polynomial division
+        let constantCoeff = 0;
+        if (numDegree >= 1 && denDegree >= 1) {
+            constantCoeff = (numCoeffs[numDegree - 1] - linearCoeff * denCoeffs[denDegree - 1]) / denLeading;
+        }
+        
+        return {
+            linear: linearCoeff,
+            constant: constantCoeff
+        };
+    }
+    
     markAsymptotesAndHoles(ctx, canvas, numerator, denominator, xRange) {
         const scale = Math.min(canvas.width, canvas.height) / (2 * xRange) * 0.8;
         const denRoots = this.findPolynomialRoots(denominator);
         
+        // Mark vertical asymptotes and holes
         denRoots.forEach(root => {
             const numValue = this.evaluatePolynomial(numerator, root);
             const canvasX = root * scale;
@@ -1839,6 +2220,79 @@ class CalculusSimulations {
                 ctx.setLineDash([]);
             }
         });
+        
+        // Check for and draw slant asymptotes
+        const numDegree = this.getPolynomialDegree(numerator);
+        const denDegree = this.getPolynomialDegree(denominator);
+        
+        if (numDegree === denDegree + 1) {
+            const slantAsymptote = this.findSlantAsymptote(numerator, denominator);
+            this.drawSlantAsymptote(ctx, canvas, slantAsymptote, xRange, scale);
+        } else if (numDegree === denDegree) {
+            // Draw horizontal asymptote
+            const numLeading = this.getLeadingCoefficient(numerator, numDegree);
+            const denLeading = this.getLeadingCoefficient(denominator, denDegree);
+            const horizontalAsymptote = numLeading / denLeading;
+            this.drawHorizontalAsymptote(ctx, canvas, horizontalAsymptote, scale);
+        } else if (numDegree < denDegree) {
+            // Draw horizontal asymptote at y = 0
+            this.drawHorizontalAsymptote(ctx, canvas, 0, scale);
+        }
+    }
+    
+    drawSlantAsymptote(ctx, canvas, slantAsymptote, xRange, scale) {
+        ctx.strokeStyle = '#9C27B0';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 5]);
+        
+        ctx.beginPath();
+        
+        const leftX = -xRange;
+        const rightX = xRange;
+        const leftY = slantAsymptote.slope * leftX + slantAsymptote.intercept;
+        const rightY = slantAsymptote.slope * rightX + slantAsymptote.intercept;
+        
+        const canvasLeftX = leftX * scale;
+        const canvasLeftY = leftY * scale;
+        const canvasRightX = rightX * scale;
+        const canvasRightY = rightY * scale;
+        
+        ctx.moveTo(canvasLeftX, canvasLeftY);
+        ctx.lineTo(canvasRightX, canvasRightY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // Add label for slant asymptote
+        ctx.save();
+        ctx.scale(1, -1); // Flip text back to normal
+        ctx.fillStyle = '#9C27B0';
+        ctx.font = '12px Arial';
+        ctx.fillText(`y = ${slantAsymptote.equation}`, canvasRightX - 100, -canvasRightY - 10);
+        ctx.restore();
+    }
+    
+    drawHorizontalAsymptote(ctx, canvas, yValue, scale) {
+        ctx.strokeStyle = '#2196F3';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 5]);
+        
+        const canvasY = yValue * scale;
+        
+        ctx.beginPath();
+        ctx.moveTo(-canvas.width/2, canvasY);
+        ctx.lineTo(canvas.width/2, canvasY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // Add label for horizontal asymptote
+        if (Math.abs(yValue) > 0.01) {
+            ctx.save();
+            ctx.scale(1, -1); // Flip text back to normal
+            ctx.fillStyle = '#2196F3';
+            ctx.font = '12px Arial';
+            ctx.fillText(`y = ${yValue.toFixed(2)}`, canvas.width/2 - 80, -canvasY - 10);
+            ctx.restore();
+        }
     }
     
     analyzeRationalFunction() {
@@ -1849,14 +2303,20 @@ class CalculusSimulations {
         const numRoots = this.findPolynomialRoots(numerator);
         const denRoots = this.findPolynomialRoots(denominator);
         
+        // Get polynomial degrees for asymptote analysis
+        const numDegree = this.getPolynomialDegree(numerator);
+        const denDegree = this.getPolynomialDegree(denominator);
+        
         let results = '';
         
         if (analysisType === 'asymptotes' || analysisType === 'complete') {
             results += `
                 <div class="step-display">
                     <strong>Asymptotes and Holes Analysis:</strong><br>
+                    <strong>Polynomial Degrees:</strong> Numerator = ${numDegree}, Denominator = ${denDegree}<br>
             `;
             
+            // Vertical Asymptotes and Holes
             if (denRoots.length > 0) {
                 results += `<strong>Denominator zeros:</strong> x = ${denRoots.join(', ')}<br>`;
                 
@@ -1871,6 +2331,10 @@ class CalculusSimulations {
             } else {
                 results += 'No vertical asymptotes or holes found.<br>';
             }
+            
+            // Horizontal and Slant Asymptotes
+            const asymptoteAnalysis = this.analyzeEndBehaviorAsymptotes(numerator, denominator, numDegree, denDegree);
+            results += asymptoteAnalysis;
             
             results += `</div>`;
         }
