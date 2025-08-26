@@ -7,6 +7,7 @@ class CalculusSimulations {
         this.canvases = {};
         this.contexts = {};
         this.animationFrames = {};
+        this.integrationScale = null;
         
         // Wait for DOM to be fully loaded before initializing canvases
         setTimeout(() => {
@@ -1409,6 +1410,7 @@ class CalculusSimulations {
         
         if (dataInputMethod === 'table') {
             this.drawDataPoints(ctx, canvas);
+            this.drawIntegrationAxes(ctx, canvas);
             this.visualizeNumericalIntegration(ctx, canvas, method);
         } else {
             const func = document.getElementById('integrationFunction').value;
@@ -1425,13 +1427,21 @@ class CalculusSimulations {
         
         if (points.length === 0) return;
         
-        // Find scale based on data range
-        const xRange = Math.max(...points.map(p => p.x)) - Math.min(...points.map(p => p.x));
-        const yRange = Math.max(...points.map(p => p.y)) - Math.min(...points.map(p => p.y));
+        // Calculate proper scaling for the data
+        const minX = Math.min(...points.map(p => p.x));
+        const maxX = Math.max(...points.map(p => p.x));
+        const minY = Math.min(...points.map(p => p.y));
+        const maxY = Math.max(...points.map(p => p.y));
         
-        const xScale = (canvas.width * 0.8) / xRange;
-        const yScale = (canvas.height * 0.6) / yRange;
-        const scale = Math.min(xScale, yScale, 50);
+        const xRange = maxX - minX;
+        const yRange = maxY - minY;
+        
+        // Use most of the canvas for the graph
+        const plotWidth = canvas.width * 0.8;
+        const plotHeight = canvas.height * 0.7;
+        
+        const xScale = plotWidth / xRange;
+        const yScale = plotHeight / yRange;
         
         // Draw the curve connecting points
         ctx.strokeStyle = '#2196F3';
@@ -1439,8 +1449,8 @@ class CalculusSimulations {
         ctx.beginPath();
         
         for (let i = 0; i < points.length; i++) {
-            const x = (points[i].x - points[0].x) * scale / 10 - canvas.width/4;
-            const y = points[i].y * scale / 100;
+            const x = (points[i].x - minX) * xScale - plotWidth/2;
+            const y = (points[i].y - minY) * yScale;
             
             if (i === 0) {
                 ctx.moveTo(x, y);
@@ -1453,13 +1463,50 @@ class CalculusSimulations {
         // Draw data points
         ctx.fillStyle = '#F44336';
         points.forEach(point => {
-            const x = (point.x - points[0].x) * scale / 10 - canvas.width/4;
-            const y = point.y * scale / 100;
+            const x = (point.x - minX) * xScale - plotWidth/2;
+            const y = (point.y - minY) * yScale;
             
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, 2 * Math.PI);
             ctx.fill();
         });
+        
+        // Store scaling info for use in visualization
+        this.integrationScale = { xScale, yScale, minX, minY, plotWidth, plotHeight };
+    }
+    
+    drawIntegrationAxes(ctx, canvas) {
+        if (!this.integrationScale) return;
+        
+        const { xScale, yScale, minX, minY, plotWidth, plotHeight } = this.integrationScale;
+        const points = this.parseDataTable(document.getElementById('dataTable').value);
+        if (points.length === 0) return;
+        
+        const maxX = Math.max(...points.map(p => p.x));
+        const maxY = Math.max(...points.map(p => p.y));
+        
+        ctx.save();
+        ctx.scale(1, -1); // Flip text back to normal
+        ctx.fillStyle = '#666';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        
+        // X-axis labels (every 200 units)
+        for (let x = minX; x <= maxX; x += 200) {
+            const canvasX = (x - minX) * xScale - plotWidth/2;
+            ctx.fillText(x.toString(), canvasX, 15);
+        }
+        
+        // Y-axis labels
+        ctx.textAlign = 'right';
+        for (let y = Math.ceil(minY/20)*20; y <= maxY; y += 20) {
+            const canvasY = -((y - minY) * yScale);
+            if (y !== 0) {
+                ctx.fillText(y.toString(), -plotWidth/2 - 10, canvasY + 4);
+            }
+        }
+        
+        ctx.restore();
     }
     
     parseDataTable(dataText) {
@@ -1484,12 +1531,11 @@ class CalculusSimulations {
         const points = this.parseDataTable(document.getElementById('dataTable').value);
         const n = parseInt(document.getElementById('numSubintervals').value);
         
-        if (points.length < 2 || n < 1) return;
+        if (points.length < 2 || n < 1 || !this.integrationScale) return;
         
+        const { xScale, yScale, minX, minY, plotWidth, plotHeight } = this.integrationScale;
         const xRange = points[points.length - 1].x - points[0].x;
         const deltaX = xRange / n;
-        
-        const scale = Math.min(50, (canvas.width * 0.8) / xRange);
         
         // Draw rectangles or trapezoids
         ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
@@ -1503,19 +1549,20 @@ class CalculusSimulations {
             const y1 = this.interpolateValue(points, x1);
             const y2 = this.interpolateValue(points, x2);
             
-            const canvasX1 = (x1 - points[0].x) * scale / 10 - canvas.width/4;
-            const canvasX2 = (x2 - points[0].x) * scale / 10 - canvas.width/4;
-            const canvasY1 = y1 * scale / 100;
-            const canvasY2 = y2 * scale / 100;
+            const canvasX1 = (x1 - minX) * xScale - plotWidth/2;
+            const canvasX2 = (x2 - minX) * xScale - plotWidth/2;
+            const canvasY1 = (y1 - minY) * yScale;
+            const canvasY2 = (y2 - minY) * yScale;
             
             if (method === 'midpoint' || method === 'both') {
                 const midX = (x1 + x2) / 2;
                 const midY = this.interpolateValue(points, midX);
-                const canvasMidX = (midX - points[0].x) * scale / 10 - canvas.width/4;
-                const canvasMidY = midY * scale / 100;
+                const canvasMidX = (midX - minX) * xScale - plotWidth/2;
+                const canvasMidY = (midY - minY) * yScale;
                 
                 // Draw rectangle
                 ctx.fillStyle = method === 'both' ? 'rgba(76, 175, 80, 0.2)' : 'rgba(76, 175, 80, 0.3)';
+                ctx.strokeStyle = '#4CAF50';
                 ctx.fillRect(canvasX1, 0, canvasX2 - canvasX1, canvasMidY);
                 ctx.strokeRect(canvasX1, 0, canvasX2 - canvasX1, canvasMidY);
             }
