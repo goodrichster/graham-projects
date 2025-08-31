@@ -169,6 +169,19 @@
             min-height: 500px;
         }
         
+        /* Add smooth transition for zoom controls */
+        #zoomControls {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+            display: none;
+        }
+        
+        #zoomControls.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
         .algebra-canvas {
             border: 2px solid #e9ecef;
             border-radius: 10px;
@@ -266,6 +279,259 @@
             color: #6c757d;
         }
         
+        /* Flashcard Styles */
+        .flashcard-container {
+            perspective: 1000px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .flashcard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .flashcard-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .flashcard-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Identities Table Styles */
+        .identities-table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        .identities-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .identities-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .identities-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .identities-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .identities-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .identities-table tr:hover {
+            background-color: #e9f7fe;
+        }
+        
+        .identity-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .identity-formula {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .identity-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .flashcard-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .nav-button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-counter {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .flashcard-main {
+            display: none;
+        }
+
+        .flashcard {
+            display: none;
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            display: none;
+        }
+
+        .flashcard-front {
+            display: none;
+        }
+
+        .flashcard-back {
+            display: none;
+        }
+
+        .card-content {
+            display: none;
+        }
+
+        .card-label {
+            display: none;
+        }
+
+        .math-formula {
+            display: none;
+        }
+
+        .flip-hint {
+            display: none;
+        }
+        
+        .progress-tracker {
+            display: none;
+        }
+
+        .progress-label {
+            display: none;
+        }
+
+        .progress-bar {
+            display: none;
+        }
+
+        .progress-fill {
+            display: none;
+        }
+
+        .progress-text {
+            display: none;
+        }
+
+        .all-cards-view {
+            display: none;
+        }
+
+        .all-cards-view h3 {
+            display: none;
+        }
+
+        .cards-grid {
+            display: none;
+        }
+
+        .mini-card {
+            display: none;
+        }
+
+        .mini-card-function {
+            display: none;
+        }
+
+        .mini-card-derivative {
+            display: none;
+        }
+        
+        .flashcard h3 {
+            display: none;
+        }
+        
+        .flashcard p {
+            display: none;
+        }
+        
+        .flashcard .identity-formula {
+            display: none;
+        }
+        
+        .flashcard .identity-explanation {
+            display: none;
+        }
+        
+        .flashcard .identity-formula {
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
+        }
+        
+        .flashcard h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .flashcard p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .flashcard .identity-formula {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 15px 0;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .flashcard .identity-explanation {
+            font-size: 1rem;
+            margin-top: 15px;
+        }
+        
         @media (max-width: 768px) {
             .content-area {
                 grid-template-columns: 1fr;
@@ -275,6 +541,41 @@
             }
             .container {
                 padding: 15px;
+            }
+            
+            .flashcard {
+                width: 90vw;
+                max-width: 350px;
+                height: 220px;
+            }
+
+            .math-formula {
+                font-size: 1.5rem;
+            }
+
+            .flashcard-navigation {
+                padding: 0 10px;
+            }
+
+            .nav-button {
+                min-width: 100px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .flashcard-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flashcard-controls .control-button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+                max-width: 200px;
             }
         }
     </style>
@@ -289,47 +590,47 @@
         
         <!-- Unit Navigation -->
         <div class="unit-navigation">
-            <div class="unit-card active" onclick="switchUnit('unit1')">
+            <div class="unit-card active" data-unit="unit1">
                 <div class="unit-title">Unit 1: Functions and Equations</div>
                 <div class="unit-description">Domain, range, transformations, quadratics, and complex numbers</div>
                 <div class="unit-weeks">Weeks 1-6</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit2')">
+            <div class="unit-card" data-unit="unit2">
                 <div class="unit-title">Unit 2: Polynomials</div>
                 <div class="unit-description">Graphing, operations, factoring, and solving polynomial equations</div>
                 <div class="unit-weeks">Weeks 7-11</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit3')">
+            <div class="unit-card" data-unit="unit3">
                 <div class="unit-title">Unit 3: Rational & Radical Functions</div>
                 <div class="unit-description">Rational exponents, inverse functions, and radical equations</div>
                 <div class="unit-weeks">Weeks 12-15</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit4')">
+            <div class="unit-card" data-unit="unit4">
                 <div class="unit-title">Unit 4: Exponentials & Logarithms</div>
                 <div class="unit-description">Growth, decay, compound interest, and logarithmic properties</div>
                 <div class="unit-weeks">Weeks 16-20</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit5')">
+            <div class="unit-card" data-unit="unit5">
                 <div class="unit-title">Unit 5: Rational Functions</div>
                 <div class="unit-description">Asymptotes, operations, and rational equations</div>
                 <div class="unit-weeks">Weeks 21-23</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit6')">
+            <div class="unit-card" data-unit="unit6">
                 <div class="unit-title">Unit 6: Sequences & Series</div>
                 <div class="unit-description">Explicit and recursive formulas, arithmetic and geometric sequences</div>
                 <div class="unit-weeks">Weeks 24-25</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit7')">
+            <div class="unit-card" data-unit="unit7">
                 <div class="unit-title">Unit 7: Trigonometric Functions</div>
                 <div class="unit-description">Unit circle, identities, and trigonometric graphs</div>
                 <div class="unit-weeks">Weeks 26-29</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit8')">
+            <div class="unit-card" data-unit="unit8">
                 <div class="unit-title">Unit 8: Probability</div>
                 <div class="unit-description">Compound events, conditional probability, and Bayes' theorem</div>
                 <div class="unit-weeks">Weeks 30-31</div>
             </div>
-            <div class="unit-card" onclick="switchUnit('unit9')">
+            <div class="unit-card" data-unit="unit9">
                 <div class="unit-title">Unit 9: Statistics</div>
                 <div class="unit-description">Data distributions, binomial probability, and empirical rule</div>
                 <div class="unit-weeks">Week 32</div>
@@ -339,12 +640,12 @@
         <!-- Unit 1: Functions and Equations -->
         <div id="unit1" class="unit-content active">
             <div class="topic-tabs">
-                <button class="topic-button active" onclick="switchTopic('domain-range')">Domain & Range</button>
-                <button class="topic-button" onclick="switchTopic('function-characteristics')">Characteristics</button>
-                <button class="topic-button" onclick="switchTopic('transformations')">Transformations</button>
-                <button class="topic-button" onclick="switchTopic('complex-numbers')">Complex Numbers</button>
-                <button class="topic-button" onclick="switchTopic('quadratic-formula')">Quadratic Formula</button>
-                <button class="topic-button" onclick="switchTopic('quadratic-systems')">Quadratic Systems</button>
+                <button class="topic-button active" data-topic="domain-range">Domain & Range</button>
+                <button class="topic-button" data-topic="function-characteristics">Characteristics</button>
+                <button class="topic-button" data-topic="transformations">Transformations</button>
+                <button class="topic-button" data-topic="complex-numbers">Complex Numbers</button>
+                <button class="topic-button" data-topic="quadratic-formula">Quadratic Formula</button>
+                <button class="topic-button" data-topic="quadratic-systems">Quadratic Systems</button>
             </div>
 
             <!-- Domain & Range -->
@@ -356,7 +657,7 @@
                     <div class="controls-panel">
                         <div class="control-group">
                             <label class="control-label">Function Type:</label>
-                            <select id="domainFunction" class="control-input" onchange="updateDomainRange()">
+                            <select id="domainFunction" class="control-input" onchange="Unit1?.updateDomainRange?.()">
                                 <option value="linear">Linear: f(x) = mx + b</option>
                                 <option value="quadratic">Quadratic: f(x) = ax² + bx + c</option>
                                 <option value="rational">Rational: f(x) = 1/x</option>
@@ -365,8 +666,8 @@
                                 <option value="logarithmic">Logarithmic: f(x) = log(x)</option>
                             </select>
                         </div>
-                        <button class="control-button" onclick="analyzeDomainRange()">Analyze Domain & Range</button>
-                        <button class="control-button" onclick="showIntervalNotation()">Show Interval Notation</button>
+                        <button class="control-button" onclick="Unit1?.analyzeDomainRange?.()">Analyze Domain & Range</button>
+                        <button class="control-button" onclick="Unit1?.showIntervalNotation?.()">Show Interval Notation</button>
                         
                         <div class="info-panel">
                             <h4>Analysis Results:</h4>
@@ -376,36 +677,162 @@
                 </div>
             </div>
 
-            <!-- Other topics for Unit 1 would follow similar structure -->
+            <!-- Function Characteristics -->
             <div id="function-characteristics" class="topic-content">
-                <h3>Function Characteristics</h3>
-                <p>Analyze increasing/decreasing intervals, positive/negative regions, and extrema.</p>
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="characteristicsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Function Type:</label>
+                            <select id="characteristicsFunction" class="control-input" onchange="Unit1?.updateCharacteristics?.()">
+                                <option value="quadratic">f(x) = x²</option>
+                                <option value="cubic">f(x) = x³ - 3x</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="Unit1?.findIncreasingDecreasing?.()">Find Increasing/Decreasing</button>
+                        <button class="control-button" onclick="Unit1?.findPositiveNegative?.()">Find Positive/Negative</button>
+                        <button class="control-button" onclick="Unit1?.findExtrema?.()">Find Extrema</button>
+                        
+                        <div class="info-panel">
+                            <h4>Analysis Results:</h4>
+                            <div id="characteristicsResults"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Transformations -->
             <div id="transformations" class="topic-content">
-                <h3>Function Transformations</h3>
-                <p>Explore the effects of parameters a, h, and k on parent functions.</p>
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="transformationsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">a (vertical stretch): <span id="transformAValue">1</span></label>
+                            <input type="range" id="transformA" class="control-input" min="-3" max="3" step="0.1" value="1" oninput="window.Unit1?.updateTransformations?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">h (horizontal shift): <span id="transformHValue">0</span></label>
+                            <input type="range" id="transformH" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit1?.updateTransformations?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">k (vertical shift): <span id="transformKValue">0</span></label>
+                            <input type="range" id="transformK" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit1?.updateTransformations?.()">
+                        </div>
+                        
+                        <div class="info-panel">
+                            <h4>Transformation Info:</h4>
+                            <div id="transformationResults"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Complex Numbers -->
             <div id="complex-numbers" class="topic-content">
-                <h3>Complex Numbers</h3>
-                <p>Operations with complex numbers and solving quadratic equations.</p>
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="complexCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Complex Number 1:</label>
+                            <input type="number" id="complexReal1" class="control-input" placeholder="Real part" value="2" onchange="window.Unit1?.updateComplex?.()">
+                            <input type="number" id="complexImag1" class="control-input" placeholder="Imaginary part" value="3" onchange="window.Unit1?.updateComplex?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Complex Number 2:</label>
+                            <input type="number" id="complexReal2" class="control-input" placeholder="Real part" value="1" onchange="window.Unit1?.updateComplex?.()">
+                            <input type="number" id="complexImag2" class="control-input" placeholder="Imaginary part" value="-2" onchange="window.Unit1?.updateComplex?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Operation:</label>
+                            <select id="complexOperation" class="control-input">
+                                <option value="add">Addition</option>
+                                <option value="subtract">Subtraction</option>
+                                <option value="multiply">Multiplication</option>
+                                <option value="divide">Division</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit1?.performComplexOperation?.()">Perform Operation</button>
+                        
+                        <div class="info-panel">
+                            <h4>Operation Results:</h4>
+                            <div id="complexResults"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Quadratic Formula -->
             <div id="quadratic-formula" class="topic-content">
-                <h3>Quadratic Formula</h3>
-                <p>Derive and apply the quadratic formula to solve equations.</p>
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="quadraticCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">a coefficient:</label>
+                            <input type="number" id="quadraticA" class="control-input" value="1" step="0.1" onchange="window.Unit1?.updateQuadraticFormula?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">b coefficient:</label>
+                            <input type="number" id="quadraticB" class="control-input" value="-2" step="0.1" onchange="window.Unit1?.updateQuadraticFormula?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">c coefficient:</label>
+                            <input type="number" id="quadraticC" class="control-input" value="1" step="0.1" onchange="window.Unit1?.updateQuadraticFormula?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit1?.solveQuadratic?.()">Solve Using Formula</button>
+                        <button class="control-button" onclick="window.Unit1?.completeSquare?.()">Complete the Square</button>
+                        
+                        <div class="info-panel">
+                            <h4>Quadratic Info:</h4>
+                            <div id="quadraticInfo"></div>
+                        </div>
+                        <div class="info-panel">
+                            <h4>Solution Results:</h4>
+                            <div id="quadraticResults"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Quadratic Systems -->
             <div id="quadratic-systems" class="topic-content">
-                <h3>Quadratic Systems</h3>
-                <p>Solve and graph nonlinear systems of equations.</p>
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="systemsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Equation 1: ax + by = c</label>
+                            <input type="number" id="systemA1" class="control-input" placeholder="a" value="1" onchange="window.Unit1?.updateSystemsGraph?.()">
+                            <input type="number" id="systemB1" class="control-input" placeholder="b" value="1" onchange="window.Unit1?.updateSystemsGraph?.()">
+                            <input type="number" id="systemC1" class="control-input" placeholder="c" value="3" onchange="window.Unit1?.updateSystemsGraph?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Equation 2: ax + by = c</label>
+                            <input type="number" id="systemA2" class="control-input" placeholder="a" value="2" onchange="window.Unit1?.updateSystemsGraph?.()">
+                            <input type="number" id="systemB2" class="control-input" placeholder="b" value="-1" onchange="window.Unit1?.updateSystemsGraph?.()">
+                            <input type="number" id="systemC2" class="control-input" placeholder="c" value="1" onchange="window.Unit1?.updateSystemsGraph?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit1?.solveSystem?.()">Solve System</button>
+                        
+                        <div class="info-panel">
+                            <h4>System Solution:</h4>
+                            <div id="systemsResults"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Units 2-9 (Placeholder structure) -->
         <div id="unit2" class="unit-content">
-            <h2>Unit 2: Polynomials (Weeks 7-11)</h2>
             <div class="topic-tabs">
                 <button class="topic-button active" onclick="switchTopic('polynomial-graphs')">Polynomial Graphs</button>
                 <button class="topic-button" onclick="switchTopic('polynomial-operations')">Operations</button>
@@ -413,45 +840,1127 @@
                 <button class="topic-button" onclick="switchTopic('polynomial-division')">Division</button>
                 <button class="topic-button" onclick="switchTopic('polynomial-equations')">Equations</button>
             </div>
+
+            <!-- Polynomial Graphs -->
             <div id="polynomial-graphs" class="topic-content active">
-                <h3>Polynomial Graphs</h3>
-                <p>Graph polynomial functions and analyze their characteristics using degree and intercept form.</p>
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="polynomialCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Polynomial Degree:</label>
+                            <select id="polynomialDegree" class="control-input" onchange="window.Unit2?.updatePolynomial?.()">
+                                <option value="linear">Linear (degree 1)</option>
+                                <option value="quadratic">Quadratic (degree 2)</option>
+                                <option value="cubic" selected>Cubic (degree 3)</option>
+                                <option value="quartic">Quartic (degree 4)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Leading Coefficient:</label>
+                            <input type="range" id="leadingCoeff" class="control-input" min="-3" max="3" step="0.1" value="1" oninput="window.Unit2?.updatePolynomial?.()">
+                            <span id="leadingCoeffValue">1</span>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Constant Term:</label>
+                            <input type="range" id="constantTerm" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit2?.updatePolynomial?.()">
+                            <span id="constantTermValue">0</span>
+                        </div>
+                        <button class="control-button" onclick="window.Unit2?.analyzePolynomial?.()">Analyze End Behavior</button>
+                        <button class="control-button" onclick="window.Unit2?.findTurningPoints?.()">Find Turning Points</button>
+                        
+                        <div class="info-panel">
+                            <h4>Polynomial Analysis:</h4>
+                            <div id="polynomialResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polynomial Operations -->
+            <div id="polynomial-operations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="operationsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Polynomial P(x):</label>
+                            <input type="text" id="polyP" class="control-input" placeholder="e.g., x^2 + 2x + 1" value="x^2 + 2x + 1" onchange="window.Unit2?.updateOperations?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Polynomial Q(x):</label>
+                            <input type="text" id="polyQ" class="control-input" placeholder="e.g., x - 1" value="x - 1" onchange="window.Unit2?.updateOperations?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Operation:</label>
+                            <select id="polyOperation" class="control-input" onchange="window.Unit2?.updateOperations?.()">
+                                <option value="add">Addition: P(x) + Q(x)</option>
+                                <option value="subtract">Subtraction: P(x) - Q(x)</option>
+                                <option value="multiply">Multiplication: P(x) × Q(x)</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit2?.performOperation?.()">Calculate Result</button>
+                        
+                        <div class="info-panel">
+                            <h4>Operation Results:</h4>
+                            <div id="operationsResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Factoring -->
+            <div id="factoring" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="factoringCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Polynomial to Factor:</label>
+                            <input type="text" id="factoringPoly" class="control-input" placeholder="e.g., x^2 - 5x + 6" value="x^2 - 5x + 6" onchange="window.Unit2?.updateFactoring?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Factoring Method:</label>
+                            <select id="factoringMethod" class="control-input">
+                                <option value="gcf">Greatest Common Factor</option>
+                                <option value="trinomial">Trinomial Factoring</option>
+                                <option value="difference">Difference of Squares</option>
+                                <option value="grouping">Factoring by Grouping</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit2?.factorPolynomial?.()">Factor Polynomial</button>
+                        <button class="control-button" onclick="window.Unit2?.showFactoringMethods?.()">Show Steps</button>
+                        
+                        <div class="info-panel">
+                            <h4>Factoring Results:</h4>
+                            <div id="factoringResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polynomial Division -->
+            <div id="polynomial-division" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="divisionCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Dividend P(x):</label>
+                            <input type="text" id="dividend" class="control-input" placeholder="e.g., x^3 + 2x^2 - x - 2" value="x^3 + 2x^2 - x - 2" onchange="window.Unit2?.updateDivision?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Divisor D(x):</label>
+                            <input type="text" id="divisor" class="control-input" placeholder="e.g., x + 1" value="x + 1" onchange="window.Unit2?.updateDivision?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Division Method:</label>
+                            <select id="divisionMethod" class="control-input">
+                                <option value="long">Long Division</option>
+                                <option value="synthetic">Synthetic Division</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit2?.performDivision?.()">Perform Division</button>
+                        <button class="control-button" onclick="window.Unit2?.showSyntheticDivision?.()">Show Steps</button>
+                        
+                        <div class="info-panel">
+                            <h4>Division Results:</h4>
+                            <div id="divisionResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polynomial Equations -->
+            <div id="polynomial-equations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="equationsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Polynomial Equation:</label>
+                            <input type="text" id="polyEquation" class="control-input" placeholder="e.g., x^3 - 6x^2 + 11x - 6 = 0" value="x^3 - 6x^2 + 11x - 6 = 0" onchange="window.Unit2?.updateEquations?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Solution Method:</label>
+                            <select id="equationMethod" class="control-input">
+                                <option value="factoring">Factoring</option>
+                                <option value="rational-root">Rational Root Theorem</option>
+                                <option value="graphical">Graphical Method</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit2?.solvePolynomialEquation?.()">Solve Equation</button>
+                        <button class="control-button" onclick="window.Unit2?.verifyRoots?.()">Verify Roots</button>
+                        
+                        <div class="info-panel">
+                            <h4>Solution Results:</h4>
+                            <div id="equationsResults"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div id="unit3" class="unit-content">
-            <h2>Unit 3: Rational Expressions and Radical Functions (Weeks 12-15)</h2>
-            <p>Rational exponents, radicals, inverse functions, and radical equations.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('rational-expressions')">Rational Expressions</button>
+                <button class="topic-button" onclick="switchTopic('radical-functions')">Radical Functions</button>
+                <button class="topic-button" onclick="switchTopic('inverse-functions')">Inverse Functions</button>
+                <button class="topic-button" onclick="switchTopic('radical-equations')">Radical Equations</button>
+                <button class="topic-button" onclick="switchTopic('rational-exponents')">Rational Exponents</button>
+            </div>
+
+            <!-- Rational Expressions -->
+            <div id="rational-expressions" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="rationalExpCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Numerator:</label>
+                            <input type="text" id="numerator" class="control-input" placeholder="e.g., x + 1" value="x + 1" onchange="window.Unit3?.updateRationalExp?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Denominator:</label>
+                            <input type="text" id="denominator" class="control-input" placeholder="e.g., x - 2" value="x - 2" onchange="window.Unit3?.updateRationalExp?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit3?.findAsymptotes?.()">Find Asymptotes</button>
+                        <button class="control-button" onclick="window.Unit3?.simplifyRational?.()">Simplify Expression</button>
+                        
+                        <div class="info-panel">
+                            <h4>Analysis Results:</h4>
+                            <div id="rationalExpResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radical Functions -->
+            <div id="radical-functions" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="radicalCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Radical Type:</label>
+                            <select id="radicalType" class="control-input" onchange="window.Unit3?.updateRadical?.()">
+                                <option value="square">Square Root: √x</option>
+                                <option value="cube">Cube Root: ∛x</option>
+                                <option value="fourth">Fourth Root: ∜x</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Horizontal Shift: <span id="radicalHValue">0</span></label>
+                            <input type="range" id="radicalH" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit3?.updateRadical?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Vertical Shift: <span id="radicalKValue">0</span></label>
+                            <input type="range" id="radicalK" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit3?.updateRadical?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit3?.analyzeDomain?.()">Analyze Domain</button>
+                        
+                        <div class="info-panel">
+                            <h4>Radical Analysis:</h4>
+                            <div id="radicalResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inverse Functions -->
+            <div id="inverse-functions" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="inverseCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Function:</label>
+                            <select id="inverseFunction" class="control-input" onchange="window.Unit3?.updateInverse?.()">
+                                <option value="linear">f(x) = 2x + 3</option>
+                                <option value="quadratic">f(x) = x² (x ≥ 0)</option>
+                                <option value="exponential">f(x) = 2^x</option>
+                                <option value="logarithmic">f(x) = log(x)</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit3?.findInverse?.()">Find Inverse</button>
+                        <button class="control-button" onclick="window.Unit3?.verifyInverse?.()">Verify Inverse</button>
+                        
+                        <div class="info-panel">
+                            <h4>Inverse Analysis:</h4>
+                            <div id="inverseResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radical Equations -->
+            <div id="radical-equations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="radicalEqCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Radical Equation:</label>
+                            <input type="text" id="radicalEquation" class="control-input" placeholder="e.g., √x + 3 = 7" value="√x + 3 = 7" onchange="window.Unit3?.updateRadicalEq?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit3?.solveRadicalEquation?.()">Solve Equation</button>
+                        <button class="control-button" onclick="window.Unit3?.checkExtraneous?.()">Check for Extraneous</button>
+                        
+                        <div class="info-panel">
+                            <h4>Solution Results:</h4>
+                            <div id="radicalEqResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rational Exponents -->
+            <div id="rational-exponents" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="rationalExpCanvas2" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Base:</label>
+                            <input type="number" id="expBase" class="control-input" value="8" step="1" onchange="window.Unit3?.updateRationalExpUnit3?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Numerator (m):</label>
+                            <input type="number" id="expNum" class="control-input" value="2" step="1" onchange="window.Unit3?.updateRationalExpUnit3?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Denominator (n):</label>
+                            <input type="number" id="expDen" class="control-input" value="3" step="1" onchange="window.Unit3?.updateRationalExpUnit3?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit3?.convertToRadical?.()">Convert to Radical</button>
+                        <button class="control-button" onclick="window.Unit3?.showExponentRules?.()">Evaluate</button>
+                        
+                        <div class="info-panel">
+                            <h4>Exponent Results:</h4>
+                            <div id="rationalExpResults2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="unit4" class="unit-content">
-            <h2>Unit 4: Exponentials and Logarithms (Weeks 16-20)</h2>
-            <p>Exponential growth/decay, compound interest, logarithmic properties, and equations.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('exponential-functions')">Exponential Functions</button>
+                <button class="topic-button" onclick="switchTopic('logarithmic-functions')">Logarithmic Functions</button>
+                <button class="topic-button" onclick="switchTopic('exponential-equations')">Exponential Equations</button>
+                <button class="topic-button" onclick="switchTopic('logarithmic-equations')">Logarithmic Equations</button>
+                <button class="topic-button" onclick="switchTopic('applications')">Applications</button>
+            </div>
+
+            <!-- Exponential Functions -->
+            <div id="exponential-functions" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="exponentialCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Base (a): <span id="expBaseValue">2</span></label>
+                            <input type="range" id="expBase4" class="control-input" min="0.1" max="5" step="0.1" value="2" oninput="window.Unit4?.updateExponential?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Vertical Shift: <span id="expKValue">0</span></label>
+                            <input type="range" id="expK" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit4?.updateExponential?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit4?.analyzeGrowthDecay?.()">Analyze Growth/Decay</button>
+                        <button class="control-button" onclick="window.Unit4?.findHorizontalAsymptote?.()">Find Asymptote</button>
+                        
+                        <div class="info-panel">
+                            <h4>Exponential Analysis:</h4>
+                            <div id="exponentialResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logarithmic Functions -->
+            <div id="logarithmic-functions" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="logarithmicCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Base:</label>
+                            <select id="logBase" class="control-input" onchange="window.Unit4?.updateLogarithmic?.()">
+                                <option value="2">Base 2</option>
+                                <option value="e">Natural Log (e)</option>
+                                <option value="10" selected>Common Log (10)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Horizontal Shift: <span id="logHValue">0</span></label>
+                            <input type="range" id="logH" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit4?.updateLogarithmic?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit4?.findVerticalAsymptote?.()">Find Asymptote</button>
+                        <button class="control-button" onclick="window.Unit4?.convertToExponential?.()">Convert to Exponential</button>
+                        
+                        <div class="info-panel">
+                            <h4>Logarithmic Analysis:</h4>
+                            <div id="logarithmicResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exponential Equations -->
+            <div id="exponential-equations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="expEqCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Exponential Equation:</label>
+                            <input type="text" id="expEquation" class="control-input" placeholder="e.g., 2^x = 8" value="2^x = 8" onchange="window.Unit4?.updateExpEq?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Solution Method:</label>
+                            <select id="expMethod" class="control-input" onchange="window.Unit4?.showExpSteps?.()">
+                                <option value="same-base">Same Base</option>
+                                <option value="logarithm">Take Logarithm</option>
+                                <option value="substitution">Substitution</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit4?.solveExponentialEq?.()">Solve Equation</button>
+                        <button class="control-button" onclick="window.Unit4?.showExpSteps?.()">Show Steps</button>
+                        
+                        <div class="info-panel">
+                            <h4>Solution Results:</h4>
+                            <div id="expEqResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logarithmic Equations -->
+            <div id="logarithmic-equations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="logEqCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Logarithmic Equation:</label>
+                            <input type="text" id="logEquation" class="control-input" placeholder="e.g., log(x) = 2" value="log(x) = 2" onchange="window.Unit4?.updateLogEq?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Solution Method:</label>
+                            <select id="logMethod" class="control-input" onchange="window.Unit4?.showLogSteps?.()">
+                                <option value="one-to-one">One-to-One Property</option>
+                                <option value="exponential">Convert to Exponential</option>
+                                <option value="properties">Logarithm Properties</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit4?.solveLogarithmicEq?.()">Solve Equation</button>
+                        <button class="control-button" onclick="window.Unit4?.showLogSteps?.()">Show Steps</button>
+                        
+                        <div class="info-panel">
+                            <h4>Solution Results:</h4>
+                            <div id="logEqResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications -->
+            <div id="applications" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="applicationsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Application Type:</label>
+                            <select id="applicationType" class="control-input" onchange="window.Unit4?.updateApplications?.()">
+                                <option value="compound">Compound Interest</option>
+                                <option value="population">Population Growth</option>
+                                <option value="decay">Radioactive Decay</option>
+                                <option value="cooling">Newton's Cooling</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Initial Value:</label>
+                            <input type="number" id="initialValue" class="control-input" value="1000" onchange="window.Unit4?.updateApplications?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Rate/Time Parameter:</label>
+                            <input type="number" id="rateParam" class="control-input" value="0.05" step="0.01" onchange="window.Unit4?.updateApplications?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit4?.calculateFutureValue?.()">Calculate Future Value</button>
+                        <button class="control-button" onclick="window.Unit4?.findHalfLife?.()">Find Half-Life</button>
+                        
+                        <div class="info-panel">
+                            <h4>Application Results:</h4>
+                            <div id="applicationsResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="unit5" class="unit-content">
-            <h2>Unit 5: Rational Functions and Equations (Weeks 21-23)</h2>
-            <p>Rational functions, asymptotes, operations with rational expressions, and equations.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('rational-functions')">Rational Functions</button>
+                <button class="topic-button" onclick="switchTopic('asymptotes')">Asymptotes</button>
+                <button class="topic-button" onclick="switchTopic('rational-operations')">Operations</button>
+                <button class="topic-button" onclick="switchTopic('rational-equations')">Equations</button>
+            </div>
+
+            <!-- Rational Functions -->
+            <div id="rational-functions" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="rationalFuncCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Function Type:</label>
+                            <select id="rationalType" class="control-input" onchange="window.Unit5?.updateRationalFunc?.()">
+                                <option value="simple">f(x) = 1/x</option>
+                                <option value="shifted">f(x) = 1/(x-h) + k</option>
+                                <option value="complex">f(x) = (ax+b)/(cx+d)</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit5?.analyzeRationalFunc?.()">Analyze Function</button>
+                        
+                        <div class="info-panel">
+                            <h4>Function Analysis:</h4>
+                            <div id="rationalFuncResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Asymptotes -->
+            <div id="asymptotes" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="asymptotesCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Asymptote Type:</label>
+                            <select id="asymptoteType" class="control-input" onchange="window.Unit5?.updateAsymptotes?.()">
+                                <option value="vertical">Vertical</option>
+                                <option value="horizontal">Horizontal</option>
+                                <option value="slant">Slant</option>
+                                <option value="all">All Types</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit5?.analyzeAsymptotes?.()">Analyze Asymptotes</button>
+                        <button class="control-button" onclick="window.Unit5?.findHoles?.()">Find Holes</button>
+                        
+                        <div class="info-panel">
+                            <h4>Asymptote Analysis:</h4>
+                            <div id="asymptotesResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rational Operations -->
+            <div id="rational-operations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="rationalOperationsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Operation Type:</label>
+                            <select id="operationType" class="control-input" onchange="window.Unit5?.updateRationalOperations?.()">
+                                <option value="add">Addition</option>
+                                <option value="subtract">Subtraction</option>
+                                <option value="multiply">Multiplication</option>
+                                <option value="divide">Division</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit5?.performRationalOperation?.()">Show Example</button>
+                        
+                        <div class="info-panel">
+                            <h4>Operation Example:</h4>
+                            <div id="rationalOperationsResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rational Equations -->
+            <div id="rational-equations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="rationalEquationsCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Example Equation:</label>
+                            <input type="text" id="equationInput" class="control-input" value="1/(x-3) + 2/(x+1) = 1" onchange="window.Unit5?.updateRationalEquations?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit5?.solveRationalEquation?.()">Solve Equation</button>
+                        
+                        <div class="info-panel">
+                            <h4>Solution Steps:</h4>
+                            <div id="rationalEquationsResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="unit6" class="unit-content">
-            <h2>Unit 6: Sequences and Series (Weeks 24-25)</h2>
-            <p>Explicit and recursive formulas, arithmetic and geometric sequences and series.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('arithmetic-sequences')">Arithmetic Sequences</button>
+                <button class="topic-button" onclick="switchTopic('geometric-sequences')">Geometric Sequences</button>
+                <button class="topic-button" onclick="switchTopic('series')">Series</button>
+            </div>
+
+            <!-- Arithmetic Sequences -->
+            <div id="arithmetic-sequences" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="arithmeticCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">First Term (a₁):</label>
+                            <input type="number" id="arithFirst" class="control-input" value="3" onchange="window.Unit6?.updateArithmetic?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Common Difference (d):</label>
+                            <input type="number" id="arithDiff" class="control-input" value="2" onchange="window.Unit6?.updateArithmetic?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit6?.findNthTerm?.()">Find nth Term</button>
+                        <button class="control-button" onclick="window.Unit6?.calculateSum?.()">Calculate Sum</button>
+                        
+                        <div class="info-panel">
+                            <h4>Sequence Analysis:</h4>
+                            <div id="arithmeticResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geometric Sequences -->
+            <div id="geometric-sequences" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="geometricCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">First Term (a₁):</label>
+                            <input type="number" id="geomFirst" class="control-input" value="2" onchange="window.Unit6?.updateGeometric?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Common Ratio (r):</label>
+                            <input type="number" id="geomRatio" class="control-input" value="2" step="0.1" onchange="window.Unit6?.updateGeometric?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit6?.findGeometricNthTerm?.()">Find nth Term</button>
+                        <button class="control-button" onclick="window.Unit6?.calculateGeometricSum?.()">Calculate Sum</button>
+                        
+                        <div class="info-panel">
+                            <h4>Sequence Analysis:</h4>
+                            <div id="geometricResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Series -->
+            <div id="series" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="seriesCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">First Term (a₁):</label>
+                            <input type="number" id="seriesFirst" class="control-input" value="1" onchange="window.Unit6?.updateSeries?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Common Ratio (r):</label>
+                            <input type="number" id="seriesRatio" class="control-input" value="0.5" step="0.1" onchange="window.Unit6?.updateSeries?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit6?.calculateInfiniteGeometricSum?.()">Calculate Infinite Sum</button>
+                        
+                        <div class="info-panel">
+                            <h4>Series Analysis:</h4>
+                            <div id="seriesResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="unit7" class="unit-content">
-            <h2>Unit 7: Trigonometric Functions and Identities (Weeks 26-29)</h2>
-            <p>Unit circle, trigonometric functions, graphs, and identities.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('unit-circle-review')">Unit Circle</button>
+                <button class="topic-button" onclick="switchTopic('trig-functions')">Trig Functions</button>
+                <button class="topic-button" onclick="switchTopic('trig-graphs')">Trig Graphs</button>
+                <button class="topic-button" onclick="switchTopic('trig-identities')">Identities</button>
+                <button class="topic-button" onclick="switchTopic('trig-applications')">Applications</button>
+            </div>
+
+            <!-- Unit Circle Review -->
+            <div id="unit-circle-review" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="unitCircleCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Angle (degrees): <span id="angleValue">0° (0 rad)</span></label>
+                            <input type="range" id="angleSlider" class="control-input" min="0" max="360" step="15" value="0" oninput="window.Unit7?.updateUnitCircle?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit7?.showTrigValues?.()">Show Trig Values</button>
+                        
+                        <div class="info-panel">
+                            <h4>Trigonometric Values:</h4>
+                            <div id="unitCircleResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trigonometric Functions -->
+            <div id="trig-functions" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="trigFuncCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Function Type:</label>
+                            <select id="trigFuncType" class="control-input" onchange="window.Unit7?.updateTrigFunction?.()">
+                                <option value="sin">f(x) = sin(x)</option>
+                                <option value="cos">f(x) = cos(x)</option>
+                                <option value="tan">f(x) = tan(x)</option>
+                                <option value="csc">f(x) = csc(x)</option>
+                                <option value="sec">f(x) = sec(x)</option>
+                                <option value="cot">f(x) = cot(x)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Amplitude (A):</label>
+                            <input type="number" id="amplitude" class="control-input" value="1" step="0.1" onchange="window.Unit7?.updateTrigFunction?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Period (B):</label>
+                            <input type="number" id="period" class="control-input" value="1" step="0.1" onchange="window.Unit7?.updateTrigFunction?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Phase Shift (C):</label>
+                            <input type="number" id="phaseShift" class="control-input" value="0" step="0.1" onchange="window.Unit7?.updateTrigFunction?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Vertical Shift (D):</label>
+                            <input type="number" id="verticalShift" class="control-input" value="0" step="0.1" onchange="window.Unit7?.updateTrigFunction?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit7?.analyzeTrigFunction?.()">Analyze Function</button>
+                        
+                        <div class="info-panel">
+                            <h4>Function Analysis:</h4>
+                            <div id="trigFuncResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trigonometric Graphs -->
+            <div id="trig-graphs" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="trigGraphCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Graph Type:</label>
+                            <select id="graphType" class="control-input" onchange="window.Unit7?.updateTrigGraph?.()">
+                                <option value="sine">Sine Wave</option>
+                                <option value="cosine">Cosine Wave</option>
+                                <option value="tangent">Tangent Curve</option>
+                                <option value="comparison">Function Comparison</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Frequency:</label>
+                            <input type="range" id="frequencySlider" class="control-input" min="0.1" max="3" step="0.1" value="1" oninput="window.Unit7?.updateTrigGraph?.()">
+                            <span id="frequencyValue">1</span>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Amplitude:</label>
+                            <input type="range" id="graphAmplitudeSlider" class="control-input" min="0.5" max="3" step="0.1" value="1" oninput="window.Unit7?.updateTrigGraph?.()">
+                            <span id="graphAmplitudeValue">1</span>
+                        </div>
+                        <button class="control-button" onclick="window.Unit7?.showGraphProperties?.()">Show Properties</button>
+                        
+                        <div class="info-panel">
+                            <h4>Graph Properties:</h4>
+                            <div id="trigGraphResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trigonometric Identities -->
+            <div id="trig-identities" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="flashcard-container">
+                            <div class="flashcard-header">
+                                <h2>Trigonometric Identities</h2>
+                                <p>Essential trigonometric identities for Algebra 2</p>
+                            </div>
+                            
+                            <!-- Table of Identities -->
+                            <div class="identities-table-container">
+                                <table class="identities-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Identity Name</th>
+                                            <th>Formula</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="identitiesTableBody">
+                                        <!-- Identities will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="flashcard-controls" style="margin-top: 30px;">
+                                <button class="control-button" onclick="window.Unit7?.refreshIdentities?.()">Refresh Table</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="info-panel">
+                            <h4>About Trigonometric Identities</h4>
+                            <p>Trigonometric identities are equations that are true for all values of the variables involved. They are used to simplify trigonometric expressions and solve trigonometric equations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trigonometric Applications -->
+            <div id="trig-applications" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="application-container">
+                            <div class="application-header">
+                                <h2>Trigonometric Applications</h2>
+                                <p>Real-world applications of trigonometry in Algebra 2</p>
+                            </div>
+                            <div class="application-content">
+                                <h3>Example 1: Height of a Building</h3>
+                                <p>You are standing 100 meters away from a building. The angle of elevation to the top of the building is 30 degrees. How tall is the building?</p>
+                                <div id="buildingHeight"></div>
+                                <h3>Example 2: Distance Between Two Ships</h3>
+                                <p>Two ships are sailing in the ocean. Ship A is 500 meters north of Ship B. The angle between the direction of Ship A and the north is 45 degrees. The angle between the direction of Ship B and the north is 60 degrees. What is the distance between the two ships?</p>
+                                <div id="shipDistance"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="info-panel">
+                            <h4>About Trigonometric Applications</h4>
+                            <p>Trigonometry has numerous real-world applications. It is used in fields such as engineering, physics, and navigation to solve problems involving angles and distances.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="unit8" class="unit-content">
-            <h2>Unit 8: Probability (Weeks 30-31)</h2>
-            <p>Compound events, conditional probability, independence, and Bayes' theorem.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('basic-probability')">Basic Probability</button>
+                <button class="topic-button" onclick="switchTopic('permutations-combinations')">Permutations & Combinations</button>
+                <button class="topic-button" onclick="switchTopic('birthday-paradox')">Birthday Paradox</button>
+                <button class="topic-button" onclick="switchTopic('conditional-probability')">Conditional Probability</button>
+                <button class="topic-button" onclick="switchTopic('bayes-theorem')">Bayes' Theorem</button>
+            </div>
+
+            <!-- Basic Probability -->
+            <div id="basic-probability" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="info-panel">
+                            <h4>Probability Visualization</h4>
+                            <p>Probability is the measure of the likelihood that an event will occur. 
+                            It is quantified as a number between 0 and 1, where 0 indicates impossibility 
+                            and 1 indicates certainty.</p>
+                            <p><strong>Formula:</strong> P(Event) = Favorable Outcomes / Total Outcomes</p>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Experiment Type:</label>
+                            <select id="probType" class="control-input" onchange="window.Unit8?.calculateProbability?.()">
+                                <option value="coin">Coin Flip</option>
+                                <option value="dice">Dice Roll</option>
+                                <option value="cards">Card Draw</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit8?.calculateProbability?.()">Calculate Probability</button>
+                        
+                        <div class="info-panel">
+                            <h4>Probability Results:</h4>
+                            <div id="probabilityResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permutations and Combinations -->
+            <div id="permutations-combinations" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="info-panel">
+                            <h4>Permutations and Combinations</h4>
+                            <p><strong>Permutations</strong> are arrangements where order matters.</p>
+                            <p><strong>Combinations</strong> are selections where order does not matter.</p>
+                            <p>These concepts are fundamental in probability and combinatorics.</p>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Total Items (n):</label>
+                            <input type="number" id="totalItems" class="control-input" value="5" min="1" onchange="window.Unit8?.calculatePermutationsCombinations?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Items to Select (r):</label>
+                            <input type="number" id="selectItems" class="control-input" value="3" min="1" onchange="window.Unit8?.calculatePermutationsCombinations?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit8?.calculatePermutationsCombinations?.()">Calculate Permutations & Combinations</button>
+                        
+                        <div class="info-panel">
+                            <h4>Results:</h4>
+                            <div id="permCombResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Birthday Paradox -->
+            <div id="birthday-paradox" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="info-panel">
+                            <h4>Birthday Paradox</h4>
+                            <p>The birthday paradox is a probability problem that demonstrates how our 
+                            intuition about probability can be misleading. It asks: What is the probability 
+                            that in a group of people, at least two share the same birthday?</p>
+                            <p>Surprisingly, in a group of just 23 people, the probability exceeds 50%!</p>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Number of People:</label>
+                            <input type="number" id="numPeople" class="control-input" value="23" min="2" max="100" onchange="window.Unit8?.calculateBirthdayParadox?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit8?.calculateBirthdayParadox?.()">Calculate Probability</button>
+                        
+                        <div class="info-panel">
+                            <h4>Birthday Paradox Results:</h4>
+                            <div id="birthdayResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conditional Probability -->
+            <div id="conditional-probability" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="info-panel">
+                            <h4>Conditional Probability</h4>
+                            <p>Conditional probability is the probability of an event occurring given that another event has already occurred.</p>
+                            <p><strong>Formula:</strong> P(A|B) = P(A ∩ B) / P(B)</p>
+                            <p>Where P(A|B) is the probability of event A given that event B has occurred.</p>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Example Scenario:</label>
+                            <select id="conditionalScenario" class="control-input" onchange="window.Unit8?.calculateConditionalProbability?.()">
+                                <option value="cards">Drawing Cards</option>
+                                <option value="students">Student Grades</option>
+                                <option value="weather">Weather Forecast</option>
+                            </select>
+                        </div>
+                        <button class="control-button" onclick="window.Unit8?.calculateConditionalProbability?.()">Calculate Conditional Probability</button>
+                        
+                        <div class="info-panel">
+                            <h4>Conditional Probability Results:</h4>
+                            <div id="conditionalResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bayes' Theorem -->
+            <div id="bayes-theorem" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <div class="info-panel">
+                            <h4>Bayes' Theorem</h4>
+                            <p>Bayes' theorem describes the probability of an event based on prior knowledge of conditions that might be related to the event.</p>
+                            <p><strong>Formula:</strong> P(A|B) = [P(B|A) × P(A)] / P(B)</p>
+                            <p>This theorem is fundamental in statistical inference and machine learning.</p>
+                        </div>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Medical Test Example:</label>
+                            <div class="control-group">
+                                <label class="control-label">Disease Prevalence (%):</label>
+                                <input type="number" id="prevalence" class="control-input" value="1" min="0" max="100" onchange="window.Unit8?.calculateBayesTheorem?.()">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Test Sensitivity (%):</label>
+                                <input type="number" id="sensitivity" class="control-input" value="95" min="0" max="100" onchange="window.Unit8?.calculateBayesTheorem?.()">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Test Specificity (%):</label>
+                                <input type="number" id="specificity" class="control-input" value="90" min="0" max="100" onchange="window.Unit8?.calculateBayesTheorem?.()">
+                            </div>
+                        </div>
+                        <button class="control-button" onclick="window.Unit8?.calculateBayesTheorem?.()">Calculate Posterior Probability</button>
+                        
+                        <div class="info-panel">
+                            <h4>Bayes' Theorem Results:</h4>
+                            <div id="bayesResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="unit9" class="unit-content">
-            <h2>Unit 9: Statistics (Week 32)</h2>
-            <p>Data distributions, binomial probability, Pascal's triangle, and empirical rule.</p>
+            <div class="topic-tabs">
+                <button class="topic-button active" onclick="switchTopic('data-distributions')">Data Distributions</button>
+                <button class="topic-button" onclick="switchTopic('binomial-probability')">Binomial Probability</button>
+                <button class="topic-button" onclick="switchTopic('normal-distribution')">Normal Distribution</button>
+            </div>
+
+            <!-- Data Distributions -->
+            <div id="data-distributions" class="topic-content active">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="distributionCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Distribution Type:</label>
+                            <select id="distType" class="control-input" onchange="window.Unit9?.updateDistribution?.()">
+                                <option value="normal">Normal Distribution</option>
+                                <option value="binomial">Binomial Distribution</option>
+                                <option value="uniform">Uniform Distribution</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Mean (μ): <span id="meanValue">0</span></label>
+                            <input type="range" id="meanSlider" class="control-input" min="-5" max="5" step="0.1" value="0" oninput="window.Unit9?.updateDistribution?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Standard Deviation (σ): <span id="stdValue">1</span></label>
+                            <input type="range" id="stdSlider" class="control-input" min="0.1" max="3" step="0.1" value="1" oninput="window.Unit9?.updateDistribution?.()">
+                        </div>
+                        <!-- Zoom controls for normal distribution -->
+                        <div class="control-group" id="zoomControls">
+                            <label class="control-label">Zoom Controls:</label>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="control-button" onclick="window.Unit9?.zoomOutNormal?.()" style="flex: 1; padding: 8px;">Zoom Out</button>
+                                <button class="control-button" onclick="window.Unit9?.resetZoomNormal?.()" style="flex: 1; padding: 8px;">Reset</button>
+                                <button class="control-button" onclick="window.Unit9?.zoomInNormal?.()" style="flex: 1; padding: 8px;">Zoom In</button>
+                            </div>
+                        </div>
+                        <button class="control-button" onclick="window.Unit9?.calculateZScore?.()">Calculate Z-Score</button>
+                        <button class="control-button" onclick="window.Unit9?.showEmpiricalRule?.()">Apply Empirical Rule</button>
+                        
+                        <div class="info-panel">
+                            <h4>Statistical Analysis:</h4>
+                            <div id="distributionResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Binomial Probability -->
+            <div id="binomial-probability" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="binomialCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Number of Trials (n):</label>
+                            <input type="number" id="trials" class="control-input" value="10" min="1" max="100" onchange="window.Unit9?.calculateBinomial?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Number of Successes (k):</label>
+                            <input type="number" id="successes" class="control-input" value="5" min="0" max="100" onchange="window.Unit9?.calculateBinomial?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Probability of Success (p):</label>
+                            <input type="number" id="probability" class="control-input" value="0.5" min="0" max="1" step="0.01" onchange="window.Unit9?.calculateBinomial?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit9?.calculateBinomial?.()">Calculate Probability</button>
+                        <button class="control-button" onclick="window.Unit9?.showBinomialProbability?.()">Show Formula</button>
+                        
+                        <div class="info-panel">
+                            <h4>Binomial Probability:</h4>
+                            <div id="binomialResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Normal Distribution -->
+            <div id="normal-distribution" class="topic-content">
+                <div class="content-area">
+                    <div class="visualization-container">
+                        <canvas id="normalCanvas" class="algebra-canvas"></canvas>
+                    </div>
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <label class="control-label">Data Value (x):</label>
+                            <input type="number" id="dataValue" class="control-input" value="0" onchange="window.Unit9?.calculateZScore?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Mean (μ):</label>
+                            <input type="number" id="mean" class="control-input" value="0" onchange="window.Unit9?.calculateZScore?.()">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Standard Deviation (σ):</label>
+                            <input type="number" id="stdDev" class="control-input" value="1" min="0.1" step="0.1" onchange="window.Unit9?.calculateZScore?.()">
+                        </div>
+                        <button class="control-button" onclick="window.Unit9?.calculateZScore?.()">Calculate Z-Score</button>
+                        <button class="control-button" onclick="window.Unit9?.showEmpiricalRule?.()">Apply Empirical Rule</button>
+                        
+                        <div class="info-panel">
+                            <h4>Normal Distribution Analysis:</h4>
+                            <div id="normalResults"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Educational Content Section -->
@@ -471,6 +1980,17 @@
         </div>
     </div>
 
-    <script src="algebra2.js"></script>
+    <!-- Core Algebra 2 Modules -->
+    <script src="core/algebra2-core.js"></script>
+    <script src="core/algebra2-ui.js"></script>
+    <script src="core/algebra2-loader.js"></script>
+    
+    <!-- Initialize when DOM is loaded -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCanvases();
+            initializeUI();
+        });
+    </script>
 </body>
 </html>
