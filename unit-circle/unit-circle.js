@@ -7,6 +7,11 @@ let animationId = null;
 let isAnimating = false;
 let animationSpeed = 0.02;
 
+// HTML element setting for the current degrees display
+// Add this element to your HTML where you want the degrees value to appear:
+// <span id="current-degrees">0°</span>
+const DEGREE_DISPLAY_SELECTOR = '#current-degrees';
+
 // Common angles for easy reference
 const COMMON_ANGLES = [
     { radians: 0, label: '0', degrees: 0 },
@@ -30,15 +35,24 @@ const COMMON_ANGLES = [
 
 // Utility functions
 function formatNumber(num, decimals = 2) {
-    if (Math.abs(num) < 1e-10) return '0.00';
+    if (Math.abs(num) < 1e-10) return decimals === 0 ? '0' : '0.00';
     return num.toFixed(decimals);
+}
+
+function updateDegreeDisplay(degrees) {
+    const degreeDisplay = document.querySelector(DEGREE_DISPLAY_SELECTOR);
+
+    // Safe exit if the HTML element has not been added yet
+    if (!degreeDisplay) return;
+
+    degreeDisplay.textContent = `${formatNumber(degrees, 0)}°`;
 }
 
 // Function to get exact trigonometric values as fractions/radicals
 function getExactValue(angle, func) {
     const tolerance = 0.001;
     const normalizedAngle = ((angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-    
+
     // Define exact values for common angles
     const exactValues = {
         0: { sin: '0', cos: '1', x: '1', y: '0' },
@@ -59,19 +73,19 @@ function getExactValue(angle, func) {
         [11*Math.PI/6]: { sin: '-1/2', cos: '√3/2', x: '√3/2', y: '-1/2' },
         [2*Math.PI]: { sin: '0', cos: '1', x: '1', y: '0' }
     };
-    
+
     // Check if the angle matches any exact value
     for (const [exactAngle, values] of Object.entries(exactValues)) {
         if (Math.abs(normalizedAngle - parseFloat(exactAngle)) < tolerance) {
-            return values[func] || formatNumber(func === 'sin' ? Math.sin(angle) : 
+            return values[func] || formatNumber(func === 'sin' ? Math.sin(angle) :
                                               func === 'cos' ? Math.cos(angle) :
                                               func === 'x' ? Math.cos(angle) :
                                               Math.sin(angle));
         }
     }
-    
+
     // Return decimal approximation if no exact match
-    const value = func === 'sin' ? Math.sin(angle) : 
+    const value = func === 'sin' ? Math.sin(angle) :
                   func === 'cos' ? Math.cos(angle) :
                   func === 'x' ? Math.cos(angle) :
                   Math.sin(angle);
@@ -89,7 +103,7 @@ function formatAngle(radians) {
     // Try to express as a fraction of π if close to common values
     const piRatio = radians / Math.PI;
     const tolerance = 0.001;
-    
+
     // Check for common fractions
     const commonFractions = [
         { value: 0, label: '0' },
@@ -110,13 +124,13 @@ function formatAngle(radians) {
         { value: 11/6, label: '11π/6' },
         { value: 2, label: '2π' }
     ];
-    
+
     for (const fraction of commonFractions) {
         if (Math.abs(piRatio - fraction.value) < tolerance) {
             return fraction.label;
         }
     }
-    
+
     return formatNumber(radians);
 }
 
@@ -124,7 +138,7 @@ function formatAngle(radians) {
 function formatAngleWithPi(radians) {
     const piRatio = radians / Math.PI;
     const tolerance = 0.001;
-    
+
     // Check for common fractions
     const commonFractions = [
         { value: 0, label: '0' },
@@ -145,14 +159,14 @@ function formatAngleWithPi(radians) {
         { value: 11/6, label: '11π/6' },
         { value: 2, label: '2π' }
     ];
-    
+
     // First check for exact matches
     for (const fraction of commonFractions) {
         if (Math.abs(piRatio - fraction.value) < tolerance) {
             return `${formatNumber(radians)} (${fraction.label})`;
         }
     }
-    
+
     // If no exact match, show decimal and simplified π representation
     if (Math.abs(piRatio) < tolerance) {
         return `${formatNumber(radians)} (0)`;
@@ -185,22 +199,22 @@ function setAngle(angle) {
 function updateFromInput() {
     const input = document.getElementById('angle-input');
     const angle = parseFloat(input.value) || 0;
-    
+
     // Update slider
     const slider = document.getElementById('angle-slider');
     slider.value = angle % (2 * Math.PI);
-    
+
     setAngle(angle);
 }
 
 function updateFromSlider() {
     const slider = document.getElementById('angle-slider');
     const angle = parseFloat(slider.value);
-    
+
     // Update input
     const input = document.getElementById('angle-input');
     input.value = formatNumber(angle);
-    
+
     setAngle(angle);
 }
 
@@ -209,11 +223,15 @@ function updateUI() {
     const cos = Math.cos(currentAngle);
     const sin = Math.sin(currentAngle);
     const tan = Math.abs(cos) > 1e-10 ? sin / cos : (sin > 0 ? 'Infinity' : '-Infinity');
-    
+    const degrees = radiansToDegrees(currentAngle);
+
+    // Update standalone degrees display if the HTML element exists
+    updateDegreeDisplay(degrees);
+
     // Get exact values
     const exactCos = getExactValue(currentAngle, 'cos');
     const exactSin = getExactValue(currentAngle, 'sin');
-    
+
     // Calculate exact tan
     let exactTan;
     if (exactCos === '0') {
@@ -251,7 +269,7 @@ function updateUI() {
     } else {
         exactTan = typeof tan === 'number' ? formatNumber(tan) : tan;
     }
-    
+
     // Update display elements
     document.getElementById('angle-display').textContent = formatAngleWithPi(currentAngle);
     document.getElementById('current-theta').textContent = formatAngleWithPi(currentAngle);
@@ -264,20 +282,20 @@ function updateUI() {
 function drawUnitCircle() {
     const canvas = document.getElementById('unit-circle-canvas');
     const ctx = canvas.getContext('2d');
-    
+
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const radius = Math.min(centerX, centerY) - 40;
-    
+
     // Calculate current point
     const x = Math.cos(currentAngle);
     const y = Math.sin(currentAngle);
     const pointX = centerX + x * radius;
     const pointY = centerY - y * radius; // Flip Y for canvas coordinates
-    
+
     // Draw axes
     ctx.strokeStyle = '#ddd';
     ctx.lineWidth = 1;
@@ -289,14 +307,14 @@ function drawUnitCircle() {
     ctx.moveTo(centerX, 20);
     ctx.lineTo(centerX, canvas.height - 20);
     ctx.stroke();
-    
+
     // Draw unit circle
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
     ctx.stroke();
-    
+
     // Draw angle arc
     if (Math.abs(currentAngle) > 0.01) {
         ctx.strokeStyle = '#667eea';
@@ -305,7 +323,7 @@ function drawUnitCircle() {
         ctx.arc(centerX, centerY, radius * 0.3, 0, -currentAngle, currentAngle < 0);
         ctx.stroke();
     }
-    
+
     // Draw radius line
     ctx.strokeStyle = '#e74c3c';
     ctx.lineWidth = 3;
@@ -313,50 +331,50 @@ function drawUnitCircle() {
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(pointX, pointY);
     ctx.stroke();
-    
+
     // Draw coordinate lines
     ctx.strokeStyle = '#2ecc71';
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 5]);
-    
-    // Vertical line (sin)
+
+    // Vertical line sin
     ctx.beginPath();
     ctx.moveTo(pointX, pointY);
     ctx.lineTo(pointX, centerY);
     ctx.stroke();
-    
-    // Horizontal line (cos)
+
+    // Horizontal line cos
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(pointX, centerY);
     ctx.stroke();
-    
+
     ctx.setLineDash([]);
-    
+
     // Draw the point
     ctx.fillStyle = '#e74c3c';
     ctx.beginPath();
     ctx.arc(pointX, pointY, 6, 0, 2 * Math.PI);
     ctx.fill();
-    
+
     // Draw labels
     ctx.fillStyle = '#333';
     ctx.font = '14px Arial';
     ctx.textAlign = 'center';
-    
+
     // Axis labels
     ctx.fillText('1', centerX + radius + 15, centerY + 5);
     ctx.fillText('-1', centerX - radius - 15, centerY + 5);
     ctx.fillText('i', centerX + 5, centerY - radius - 10);
     ctx.fillText('-i', centerX + 5, centerY + radius + 20);
-    
+
     // Point coordinates
     ctx.fillStyle = '#e74c3c';
     ctx.font = 'bold 12px monospace';
     ctx.textAlign = 'left';
     const exactCoordinates = getExactCoordinate(x, y);
     ctx.fillText(exactCoordinates, pointX + 10, pointY - 10);
-    
+
     // Angle label
     if (Math.abs(currentAngle) > 0.01) {
         ctx.fillStyle = '#667eea';
@@ -367,16 +385,16 @@ function drawUnitCircle() {
         const labelY = centerY - Math.sin(currentAngle / 2) * labelRadius;
         ctx.fillText('θ', labelX, labelY);
     }
-    
+
     // Value labels
     ctx.fillStyle = '#2ecc71';
     ctx.font = 'bold 12px monospace';
-    
+
     // cos label
     ctx.textAlign = 'center';
     const exactCos = getExactValue(currentAngle, 'cos');
     ctx.fillText(`cos(θ) = ${exactCos}`, (centerX + pointX) / 2, centerY + 20);
-    
+
     // sin label
     ctx.textAlign = 'left';
     const sinLabelX = pointX + 10;
@@ -389,21 +407,21 @@ function drawUnitCircle() {
 function createValuesTable() {
     const tbody = document.getElementById('values-table-body');
     tbody.innerHTML = '';
-    
+
     COMMON_ANGLES.forEach((angle, index) => {
         const row = tbody.insertRow();
         row.dataset.angle = angle.radians;
-        
+
         const cos = Math.cos(angle.radians);
         const sin = Math.sin(angle.radians);
         const tan = Math.abs(cos) > 1e-10 ? sin / cos : '∞';
-        
+
         // Get exact values
         const exactCos = getExactValue(angle.radians, 'cos');
         const exactSin = getExactValue(angle.radians, 'sin');
         const exactX = getExactValue(angle.radians, 'x');
         const exactY = getExactValue(angle.radians, 'y');
-        
+
         // Calculate exact tan
         let exactTan;
         if (exactCos === '0') {
@@ -441,35 +459,35 @@ function createValuesTable() {
         } else {
             exactTan = typeof tan === 'number' ? formatNumber(tan) : tan;
         }
-        
-        // θ (radians)
+
+        // θ radians
         const radiansCell = row.insertCell(0);
         if (angle.label === '0') {
             radiansCell.textContent = '0';
         } else {
             radiansCell.textContent = `${formatNumber(angle.radians)} (${angle.label})`;
         }
-        
-        // θ (degrees)
+
+        // θ degrees
         const degreesCell = row.insertCell(1);
         degreesCell.textContent = angle.degrees + '°';
-        
+
         // x
         const xCell = row.insertCell(2);
         xCell.textContent = exactX;
-        
+
         // y
         const yCell = row.insertCell(3);
         yCell.textContent = exactY;
-        
+
         // sin(θ)
         const sinCell = row.insertCell(4);
         sinCell.textContent = exactSin;
-        
+
         // cos(θ)
         const cosCell = row.insertCell(5);
         cosCell.textContent = exactCos;
-        
+
         // tan(θ)
         const tanCell = row.insertCell(6);
         tanCell.textContent = exactTan;
@@ -480,16 +498,16 @@ function createValuesTable() {
 function highlightTableRow() {
     const rows = document.querySelectorAll('#values-table-body tr');
     const tolerance = 0.01;
-    
+
     rows.forEach(row => {
         row.classList.remove('current-row');
         const rowAngle = parseFloat(row.dataset.angle);
-        
+
         // Check if current angle is close to this row's angle
         const normalizedCurrent = ((currentAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
         const normalizedRow = ((rowAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        
-        if (Math.abs(normalizedCurrent - normalizedRow) < tolerance || 
+
+        if (Math.abs(normalizedCurrent - normalizedRow) < tolerance ||
             Math.abs(normalizedCurrent - normalizedRow - 2 * Math.PI) < tolerance ||
             Math.abs(normalizedCurrent - normalizedRow + 2 * Math.PI) < tolerance) {
             row.classList.add('current-row');
@@ -500,7 +518,7 @@ function highlightTableRow() {
 // Animation functions
 function startAnimation() {
     if (isAnimating) return;
-    
+
     isAnimating = true;
     animate();
 }
@@ -515,20 +533,20 @@ function stopAnimation() {
 
 function animate() {
     if (!isAnimating) return;
-    
+
     currentAngle += animationSpeed;
-    
+
     // Update controls
     const input = document.getElementById('angle-input');
     const slider = document.getElementById('angle-slider');
-    
+
     input.value = formatNumber(currentAngle);
     slider.value = (currentAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-    
+
     updateUI();
     drawUnitCircle();
     highlightTableRow();
-    
+
     animationId = requestAnimationFrame(animate);
 }
 
@@ -536,10 +554,10 @@ function animate() {
 document.addEventListener('DOMContentLoaded', function() {
     // Create the values table
     createValuesTable();
-    
+
     // Set initial angle
     setAngle(0);
-    
+
     // Add keyboard controls
     document.addEventListener('keydown', function(event) {
         if (event.key === 'ArrowLeft') {
@@ -557,14 +575,14 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
         }
     });
-    
+
     // Handle canvas resize
     window.addEventListener('resize', function() {
         setTimeout(drawUnitCircle, 100);
     });
 });
 
-// Export functions for global access (for onclick handlers)
+// Export functions for global access for onclick handlers
 window.setAngle = setAngle;
 window.updateFromInput = updateFromInput;
 window.updateFromSlider = updateFromSlider;
